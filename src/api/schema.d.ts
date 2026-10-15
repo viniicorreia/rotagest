@@ -383,6 +383,482 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Categorias padrão e personalizadas da empresa */
+        get: operations["Categories_list"];
+        put?: never;
+        post: operations["Categories_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/categories/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Renomeia (só personalizadas) ou ativa/desativa uma categoria */
+        patch: operations["Categories_update"];
+        trace?: never;
+    };
+    "/api/v1/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Contas financeiras com saldo atual calculado pelo razão */
+        get: operations["Accounts_list"];
+        put?: never;
+        /** Cria conta (corrente, poupança, caixa ou outra) com saldo inicial */
+        post: operations["Accounts_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accounts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Accounts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["Accounts_update"];
+        trace?: never;
+    };
+    "/api/v1/accounts/{id}/statement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Extrato da conta no período, com saldo anterior e saldo após cada lançamento */
+        get: operations["Accounts_statement"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accounts/{id}/adjustments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ajuste autorizado de saldo, com justificativa e auditoria */
+        post: operations["Accounts_adjust"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/transfers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Transfers_list"];
+        put?: never;
+        /** Transferência entre contas da empresa (idempotente; não é receita nem despesa) */
+        post: operations["Transfers_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/transfers/{id}/reverse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Estorna a transferência com lançamentos opostos (nada é apagado) */
+        post: operations["Transfers_reverse"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/settlements/{id}/reverse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Estorna um pagamento/recebimento: lança o movimento oposto e reabre o saldo da conta a pagar/receber */
+        post: operations["Settlements_reverse"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recurrences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Recurrences_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recurrences/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Altera descrição, valor ou dia de vencimento das próximas ocorrências (as já geradas não mudam) */
+        patch: operations["Recurrences_update"];
+        trace?: never;
+    };
+    "/api/v1/recurrences/{id}/stop": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Encerra a recorrência; lançamentos já gerados continuam */
+        post: operations["Recurrences_stop"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vehicles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista veículos e o uso do limite do plano */
+        get: operations["Vehicles_list"];
+        put?: never;
+        /** Cadastra veículo (respeita o limite de veículos do plano) */
+        post: operations["Vehicles_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vehicles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Detalhes do veículo; com finance:read inclui o resultado gerencial (competência) e a evolução mensal */
+        get: operations["Vehicles_get"];
+        put?: never;
+        post?: never;
+        /** Exclui definitivamente um veículo sem histórico; com histórico, use arquivar */
+        delete: operations["Vehicles_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["Vehicles_update"];
+        trace?: never;
+    };
+    "/api/v1/vehicles/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Arquiva o veículo (preserva o histórico e libera a vaga do plano) */
+        post: operations["Vehicles_archive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vehicles/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reativa um veículo arquivado (respeita o limite do plano) */
+        post: operations["Vehicles_restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Indicadores financeiros da empresa ativa (caixa e competência rotulados), com filtros de período, veículo e categoria */
+        get: operations["Dashboard_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/payables": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Contas a pagar com filtros, paginação e totais do filtro */
+        get: operations["Payables_list"];
+        put?: never;
+        /** Cria despesa avulsa, parcelada ou recorrente (opcionalmente já paga) */
+        post: operations["Payables_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/payables/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Payables_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["Payables_update"];
+        trace?: never;
+    };
+    "/api/v1/payables/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancela (sem apagar). Exige estornar pagamentos antes. */
+        post: operations["Payables_cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/payables/{id}/settlements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Registra pagamento total ou parcial (idempotente pela idempotencyKey) */
+        post: operations["Payables_pay"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/receivables": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Contas a receber com filtros, paginação e totais do filtro */
+        get: operations["Receivables_list"];
+        put?: never;
+        /** Cria receita avulsa, parcelada ou recorrente (opcionalmente já recebida) */
+        post: operations["Receivables_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/receivables/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Receivables_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["Receivables_update"];
+        trace?: never;
+    };
+    "/api/v1/receivables/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancela (sem apagar). Exige estornar recebimentos antes. */
+        post: operations["Receivables_cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/receivables/{id}/settlements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Registra recebimento total ou parcial (idempotente pela idempotencyKey) */
+        post: operations["Receivables_receive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Anexa comprovante a uma conta a pagar, a receber ou a um pagamento/recebimento */
+        post: operations["Attachments_upload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/attachments/{id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Baixa o comprovante (somente da empresa ativa) */
+        get: operations["Attachments_download"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/attachments/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Attachments_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -680,6 +1156,876 @@ export interface components {
             status: components["schemas"]["InvitationStatus"];
             /** Format: date-time */
             expiresAt: string;
+        };
+        /** @enum {string} */
+        CategoryType: "INCOME" | "EXPENSE";
+        /** @enum {string} */
+        RecordStatus: "ACTIVE" | "INACTIVE";
+        CategoryDto: {
+            /** Format: uuid */
+            id: string;
+            type: components["schemas"]["CategoryType"];
+            name: string;
+            /** @description Chave das categorias padrão (FUEL, MAINTENANCE...); null = personalizada */
+            systemKey: string | null;
+            status: components["schemas"]["RecordStatus"];
+        };
+        CreateCategoryDto: {
+            type: components["schemas"]["CategoryType"];
+            /** @example Monitora */
+            name: string;
+        };
+        UpdateCategoryDto: {
+            /** @description Somente categorias personalizadas podem ser renomeadas */
+            name?: string;
+            status?: components["schemas"]["RecordStatus"];
+        };
+        /** @enum {string} */
+        FinancialAccountType: "CHECKING" | "SAVINGS" | "CASH" | "OTHER";
+        AccountDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            type: components["schemas"]["FinancialAccountType"];
+            bankName: string | null;
+            /** @example 2500.00 */
+            openingBalance: string;
+            /** Format: date */
+            openingBalanceDate: string;
+            status: components["schemas"]["RecordStatus"];
+            /**
+             * @description Saldo atual = Σ entradas − Σ saídas do razão
+             * @example 3120.45
+             */
+            balance: string;
+        };
+        AccountListDto: {
+            items: components["schemas"]["AccountDto"][];
+            /**
+             * @description Soma dos saldos das contas ativas
+             * @example 5120.45
+             */
+            totalBalance: string;
+        };
+        /** @enum {string} */
+        TransactionKind: "OPENING_BALANCE" | "SETTLEMENT" | "TRANSFER" | "ADJUSTMENT" | "REVERSAL";
+        /** @enum {string} */
+        TransactionDirection: "IN" | "OUT";
+        StatementEntryDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: date */
+            occurredAt: string;
+            kind: components["schemas"]["TransactionKind"];
+            direction: components["schemas"]["TransactionDirection"];
+            amount: string;
+            description: string;
+            reason: string | null;
+            /** @description Saldo da conta depois deste lançamento */
+            balanceAfter: string;
+            /** Format: uuid */
+            settlementId: string | null;
+            /** Format: uuid */
+            transferId: string | null;
+            /** @description Este lançamento já foi estornado */
+            reversed: boolean;
+        };
+        StatementDto: {
+            account: components["schemas"]["AccountDto"];
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            /** @description Saldo antes de `from` */
+            openingBalance: string;
+            /** @description Saldo ao fim de `to` */
+            closingBalance: string;
+            totalIn: string;
+            totalOut: string;
+            entries: components["schemas"]["StatementEntryDto"][];
+        };
+        CreateAccountDto: {
+            /** @example Banco do Brasil */
+            name: string;
+            type: components["schemas"]["FinancialAccountType"];
+            /** @example Banco do Brasil */
+            bankName?: Record<string, never> | null;
+            /**
+             * @description Saldo na data do saldo inicial; pode ser negativo
+             * @example 2500.00
+             */
+            openingBalance: string;
+            /**
+             * Format: date
+             * @description Data do saldo inicial (não pode ser futura)
+             * @example 2026-10-15
+             */
+            openingBalanceDate: string;
+        };
+        UpdateAccountDto: {
+            name?: string;
+            type?: components["schemas"]["FinancialAccountType"];
+            bankName?: Record<string, never> | null;
+            /** @description Só é possível desativar uma conta com saldo zero */
+            status?: components["schemas"]["RecordStatus"];
+            /** @example 2500.00 */
+            openingBalance?: string;
+            /**
+             * Format: date
+             * @example 2026-10-15
+             */
+            openingBalanceDate?: string;
+        };
+        AdjustmentDto: {
+            direction: components["schemas"]["TransactionDirection"];
+            /** @example 1500.00 */
+            amount: string;
+            /**
+             * Format: date
+             * @example 2026-10-15
+             */
+            occurredAt: string;
+            /** @example Diferença de conciliação com o extrato de outubro */
+            reason: string;
+        };
+        AdjustmentResultDto: {
+            entry: components["schemas"]["StatementEntryDto"];
+            /** @description Saldo atual da conta depois do ajuste */
+            balance: string;
+        };
+        TransferDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            fromAccountId: string;
+            fromAccountName: string;
+            /** Format: uuid */
+            toAccountId: string;
+            toAccountName: string;
+            amount: string;
+            /** Format: date */
+            transferredAt: string;
+            description: string | null;
+            /** Format: date-time */
+            reversedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        CreateTransferDto: {
+            /** Format: uuid */
+            fromAccountId: string;
+            /** Format: uuid */
+            toAccountId: string;
+            /** @example 1500.00 */
+            amount: string;
+            /**
+             * Format: date
+             * @description Data da transferência (não pode ser futura)
+             * @example 2026-10-15
+             */
+            transferredAt: string;
+            description?: Record<string, never> | null;
+            /**
+             * @description Chave gerada pelo cliente por tentativa; repetir a chave não duplica a transferência
+             * @example c0a8012e-7f3b-4c55-9a3e-2f1d6b8e9a10
+             */
+            idempotencyKey: string;
+        };
+        ReverseDto: {
+            /** @example Lançado na conta errada */
+            reason: string;
+        };
+        ReverseSettlementDto: {
+            /** @example Pagamento registrado na conta errada */
+            reason: string;
+        };
+        /** @enum {string} */
+        SettlementType: "PAYMENT" | "RECEIPT";
+        /** @enum {string} */
+        PaymentMethod: "PIX" | "CASH" | "TRANSFER" | "DEPOSIT" | "BOLETO" | "CARD" | "OTHER";
+        AccountRefDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        SettlementDto: {
+            /** Format: uuid */
+            id: string;
+            type: components["schemas"]["SettlementType"];
+            amount: string;
+            /**
+             * Format: date
+             * @description Data efetiva (caixa)
+             */
+            settledAt: string;
+            method: components["schemas"]["PaymentMethod"];
+            account: components["schemas"]["AccountRefDto"];
+            notes: string | null;
+            /** Format: date-time */
+            reversedAt: string | null;
+            reversalReason: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: uuid */
+            payableId: string | null;
+            /** Format: uuid */
+            receivableId: string | null;
+        };
+        /** @enum {string} */
+        RecurrenceTarget: "PAYABLE" | "RECEIVABLE";
+        /** @enum {string} */
+        RecurrenceFrequency: "MONTHLY" | "YEARLY";
+        CategoryRefDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            type: components["schemas"]["CategoryType"];
+            systemKey: string | null;
+        };
+        RecurrenceRuleDto: {
+            /** Format: uuid */
+            id: string;
+            target: components["schemas"]["RecurrenceTarget"];
+            frequency: components["schemas"]["RecurrenceFrequency"];
+            description: string;
+            amount: string;
+            /** @example 2026-08 */
+            startMonth: string;
+            /** @example 2027-07 */
+            endMonth: string | null;
+            maxOccurrences: number | null;
+            dueDay: number;
+            /** @example 2026-11 */
+            lastGeneratedMonth: string | null;
+            status: components["schemas"]["RecordStatus"];
+            category: components["schemas"]["CategoryRefDto"];
+        };
+        UpdateRecurrenceDto: {
+            description?: string;
+            /**
+             * @description Novo valor para as próximas ocorrências ainda não geradas
+             * @example 1500.00
+             */
+            amount?: string;
+            dueDay?: number;
+        };
+        /** @enum {string} */
+        VehicleStatus: "ACTIVE" | "MAINTENANCE" | "INACTIVE";
+        VehicleDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /** @description Sem hífen, maiúsculas */
+            plate: string;
+            brand: string | null;
+            model: string | null;
+            year: number | null;
+            odometerKm: number;
+            status: components["schemas"]["VehicleStatus"];
+            notes: string | null;
+            /** Format: date-time */
+            archivedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        VehicleUsageDto: {
+            /** @description Veículos não arquivados */
+            used: number;
+            /** @description null = ilimitado */
+            limit: number | null;
+        };
+        VehicleListDto: {
+            items: components["schemas"]["VehicleDto"][];
+            usage: components["schemas"]["VehicleUsageDto"];
+        };
+        VehicleMonthResultDto: {
+            /** @example 2026-10 */
+            month: string;
+            /** @example 12000.00 */
+            revenue: string;
+            /** @example 3500.00 */
+            directCost: string;
+            /** @example 200.00 */
+            sharedCost: string;
+            /** @example 8300.00 */
+            result: string;
+        };
+        VehicleResultDto: {
+            /** @example 2026-01 */
+            from: string;
+            /** @example 2026-10 */
+            to: string;
+            /** @description Regime de competência gerencial */
+            regime: string;
+            /** @description Receitas atribuídas ao veículo */
+            revenue: string;
+            /** @description Despesas lançadas diretamente no veículo */
+            directCost: string;
+            /** @description Parcela do veículo em despesas rateadas */
+            sharedCost: string;
+            /** @description Receitas − despesas (resultado gerencial, não é lucro contábil) */
+            result: string;
+            months: components["schemas"]["VehicleMonthResultDto"][];
+        };
+        VehicleDetailDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /** @description Sem hífen, maiúsculas */
+            plate: string;
+            brand: string | null;
+            model: string | null;
+            year: number | null;
+            odometerKm: number;
+            status: components["schemas"]["VehicleStatus"];
+            notes: string | null;
+            /** Format: date-time */
+            archivedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** @description null sem a permissão finance:read */
+            financial: components["schemas"]["VehicleResultDto"] | null;
+            /** @description Possui lançamentos financeiros (não pode ser excluído, só arquivado) */
+            hasHistory: boolean;
+        };
+        CreateVehicleDto: {
+            /** @example Van 01 */
+            name: string;
+            /**
+             * @description Placa antiga ou Mercosul; hífen e minúsculas são aceitos
+             * @example ABC1D23
+             */
+            plate: string;
+            /** @example Mercedes-Benz */
+            brand?: Record<string, never> | null;
+            /** @example Sprinter 416 */
+            model?: Record<string, never> | null;
+            /** @example 2022 */
+            year?: Record<string, never> | null;
+            /**
+             * @description Quilometragem atual
+             * @example 85000
+             */
+            odometerKm?: number;
+            status?: components["schemas"]["VehicleStatus"];
+            notes?: Record<string, never> | null;
+        };
+        UpdateVehicleDto: {
+            /** @example Van 01 */
+            name?: string;
+            /**
+             * @description Placa antiga ou Mercosul; hífen e minúsculas são aceitos
+             * @example ABC1D23
+             */
+            plate?: string;
+            /** @example Mercedes-Benz */
+            brand?: Record<string, never> | null;
+            /** @example Sprinter 416 */
+            model?: Record<string, never> | null;
+            /** @example 2022 */
+            year?: Record<string, never> | null;
+            /**
+             * @description Quilometragem atual
+             * @example 85000
+             */
+            odometerKm?: number;
+            status?: components["schemas"]["VehicleStatus"];
+            notes?: Record<string, never> | null;
+        };
+        AccountBalanceDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            type: components["schemas"]["FinancialAccountType"];
+            balance: string;
+        };
+        BalancesDto: {
+            /** @description Saldo total das contas ativas hoje (sempre da empresa, sem filtros) */
+            total: string;
+            accounts: components["schemas"]["AccountBalanceDto"][];
+        };
+        CashDto: {
+            /** @description Regime de caixa: recebimentos e pagamentos efetivos no período */
+            regime: string;
+            received: string;
+            paid: string;
+            /** @description Recebido − pago */
+            result: string;
+        };
+        AccrualDto: {
+            /** @description Competência gerencial: receitas e despesas previstas do período */
+            regime: string;
+            revenue: string;
+            expense: string;
+            /** @description Resultado gerencial (não é lucro líquido contábil) */
+            result: string;
+        };
+        OpenObligationsDto: {
+            /** @description Saldo em aberto (todas as datas) */
+            open: string;
+            openCount: number;
+            /** @description Em aberto e vencido */
+            overdue: string;
+            overdueCount: number;
+            /** @description Vence de hoje até 7 dias */
+            dueSoon: string;
+            dueSoonCount: number;
+        };
+        VehicleResultRowDto: {
+            /**
+             * Format: uuid
+             * @description null = não alocado a veículo
+             */
+            vehicleId: string | null;
+            name: string;
+            plate: string | null;
+            revenue: string;
+            cost: string;
+            result: string;
+        };
+        VehiclesSummaryDto: {
+            active: number;
+            /** @description Custo médio por veículo ativo no período (competência) */
+            costPerVehicle: string;
+            /** @description Resultado por veículo; inclui a linha "Não alocado" quando houver */
+            results: components["schemas"]["VehicleResultRowDto"][];
+        };
+        MonthlyPointDto: {
+            /** @example 2026-10 */
+            month: string;
+            /** @description Caixa: recebido */
+            cashIn: string;
+            /** @description Caixa: pago */
+            cashOut: string;
+            /** @description Competência: receitas */
+            revenue: string;
+            /** @description Competência: despesas */
+            expense: string;
+            /** @description Competência: manutenção, peças, pneus e borracharia */
+            maintenance: string;
+            /** @description Competência: combustível */
+            fuel: string;
+        };
+        CategoryAmountDto: {
+            /** Format: uuid */
+            categoryId: string;
+            name: string;
+            systemKey: string | null;
+            amount: string;
+        };
+        DashboardDto: {
+            /** @example 2026-10 */
+            from: string;
+            /** @example 2026-10 */
+            to: string;
+            balances: components["schemas"]["BalancesDto"];
+            cash: components["schemas"]["CashDto"];
+            accrual: components["schemas"]["AccrualDto"];
+            payables: components["schemas"]["OpenObligationsDto"];
+            receivables: components["schemas"]["OpenObligationsDto"];
+            vehicles: components["schemas"]["VehiclesSummaryDto"];
+            /** @description Até 12 meses terminando em `to` */
+            monthly: components["schemas"]["MonthlyPointDto"][];
+            /** @description Despesas do período por categoria (competência) */
+            expensesByCategory: components["schemas"]["CategoryAmountDto"][];
+        };
+        /** @enum {string} */
+        PayableStatusFilter: "PENDING" | "PARTIALLY_PAID" | "PAID" | "CANCELED" | "OPEN" | "OVERDUE";
+        /** @enum {string} */
+        PayableStatus: "PENDING" | "PARTIALLY_PAID" | "PAID" | "CANCELED";
+        /** @enum {string} */
+        EntryKind: "SINGLE" | "RECURRING" | "INSTALLMENT";
+        VehicleRefDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            plate: string;
+        };
+        /** @enum {string} */
+        ApprovalStatus: "APPROVED" | "PENDING_APPROVAL" | "REJECTED";
+        PayableDto: {
+            /** Format: uuid */
+            id: string;
+            description: string;
+            category: components["schemas"]["CategoryRefDto"];
+            amount: string;
+            paidAmount: string;
+            /** @description Saldo em aberto = valor − pago */
+            openAmount: string;
+            /** @example 2026-10 */
+            competence: string;
+            /** Format: date */
+            dueDate: string;
+            status: components["schemas"]["PayableStatus"];
+            /** @description Derivado: em aberto e vencimento antes de hoje */
+            overdue: boolean;
+            kind: components["schemas"]["EntryKind"];
+            installmentNumber: number | null;
+            installmentCount: number | null;
+            /** Format: uuid */
+            installmentGroupId: string | null;
+            /** Format: uuid */
+            recurrenceRuleId: string | null;
+            vehicle: components["schemas"]["VehicleRefDto"] | null;
+            supplierName: string | null;
+            notes: string | null;
+            approvalStatus: components["schemas"]["ApprovalStatus"];
+            /** Format: date-time */
+            canceledAt: string | null;
+            cancelReason: string | null;
+            attachmentsCount: number;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ObligationSummaryDto: {
+            /** @description Valor total (sem canceladas) */
+            amount: string;
+            /** @description Já liquidado */
+            settled: string;
+            /** @description Saldo em aberto */
+            open: string;
+            /** @description Saldo em aberto vencido */
+            overdue: string;
+            overdueCount: number;
+        };
+        PayableListDto: {
+            items: components["schemas"]["PayableDto"][];
+            total: number;
+            page: number;
+            pageSize: number;
+            /** @description Totais de todo o filtro (não só da página) */
+            summary: components["schemas"]["ObligationSummaryDto"];
+        };
+        AttachmentDto: {
+            /** Format: uuid */
+            id: string;
+            originalName: string;
+            mimeType: string;
+            sizeBytes: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: uuid */
+            settlementId: string | null;
+        };
+        /** @enum {string} */
+        AllocationMethod: "DIRECT" | "EQUAL" | "PERCENT" | "FIXED" | "REVENUE_PROPORTIONAL";
+        AllocationDto: {
+            vehicle: components["schemas"]["VehicleRefDto"] | null;
+            method: components["schemas"]["AllocationMethod"];
+            amount: string;
+        };
+        PayableDetailDto: {
+            /** Format: uuid */
+            id: string;
+            description: string;
+            category: components["schemas"]["CategoryRefDto"];
+            amount: string;
+            paidAmount: string;
+            /** @description Saldo em aberto = valor − pago */
+            openAmount: string;
+            /** @example 2026-10 */
+            competence: string;
+            /** Format: date */
+            dueDate: string;
+            status: components["schemas"]["PayableStatus"];
+            /** @description Derivado: em aberto e vencimento antes de hoje */
+            overdue: boolean;
+            kind: components["schemas"]["EntryKind"];
+            installmentNumber: number | null;
+            installmentCount: number | null;
+            /** Format: uuid */
+            installmentGroupId: string | null;
+            /** Format: uuid */
+            recurrenceRuleId: string | null;
+            vehicle: components["schemas"]["VehicleRefDto"] | null;
+            supplierName: string | null;
+            notes: string | null;
+            approvalStatus: components["schemas"]["ApprovalStatus"];
+            /** Format: date-time */
+            canceledAt: string | null;
+            cancelReason: string | null;
+            attachmentsCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            settlements: components["schemas"]["SettlementDto"][];
+            attachments: components["schemas"]["AttachmentDto"][];
+            allocations: components["schemas"]["AllocationDto"][];
+        };
+        RecurrenceInputDto: {
+            frequency: components["schemas"]["RecurrenceFrequency"];
+            /**
+             * @description Última competência (inclusive). Sem fim se omitido
+             * @example 2026-10
+             */
+            endMonth?: string;
+            /** @description Número máximo de ocorrências */
+            maxOccurrences?: number;
+        };
+        SettleNowDto: {
+            /** Format: uuid */
+            accountId: string;
+            /**
+             * Format: date
+             * @description Data efetiva (padrão: hoje; não pode ser futura)
+             * @example 2026-10-15
+             */
+            settledAt?: string;
+            method: components["schemas"]["PaymentMethod"];
+            /** @description Chave gerada pelo cliente por tentativa */
+            idempotencyKey: string;
+        };
+        CreatePayableDto: {
+            /** @example Seguro da Van 01 */
+            description: string;
+            /**
+             * Format: uuid
+             * @description Categoria de despesa ativa
+             */
+            categoryId: string;
+            /**
+             * @description Valor; em despesa parcelada é o valor TOTAL, dividido entre as parcelas
+             * @example 1500.00
+             */
+            amount: string;
+            /**
+             * @description Competência (mês a que a despesa pertence)
+             * @example 2026-10
+             */
+            competence: string;
+            /**
+             * Format: date
+             * @description Vencimento (da primeira parcela/ocorrência)
+             * @example 2026-10-15
+             */
+            dueDate: string;
+            /**
+             * Format: uuid
+             * @description Veículo: a despesa é alocada 100% nele (custo direto)
+             */
+            vehicleId?: Record<string, never> | null;
+            /** @example Auto Peças Central */
+            supplierName?: Record<string, never> | null;
+            notes?: Record<string, never> | null;
+            /** @default SINGLE */
+            kind: components["schemas"]["EntryKind"];
+            /** @description Obrigatório quando kind = INSTALLMENT */
+            installmentCount?: number;
+            /** @description Obrigatório quando kind = RECURRING */
+            recurrence?: components["schemas"]["RecurrenceInputDto"];
+            /** @description Lançar já pago (somente kind = SINGLE) */
+            settleNow?: components["schemas"]["SettleNowDto"];
+        };
+        CreatePayableResultDto: {
+            /** @description Obrigações criadas (1 avulsa, n parcelas ou as ocorrências já geradas da recorrência) */
+            items: components["schemas"]["PayableDto"][];
+            /** Format: uuid */
+            recurrenceRuleId: string | null;
+        };
+        UpdatePayableDto: {
+            description?: string;
+            /** Format: uuid */
+            categoryId?: string;
+            /**
+             * @description Não pode ficar abaixo do valor já pago
+             * @example 1500.00
+             */
+            amount?: string;
+            /** @example 2026-10 */
+            competence?: string;
+            /**
+             * Format: date
+             * @example 2026-10-15
+             */
+            dueDate?: string;
+            /** Format: uuid */
+            vehicleId?: Record<string, never> | null;
+            supplierName?: Record<string, never> | null;
+            notes?: Record<string, never> | null;
+        };
+        /**
+         * @description THIS_AND_FUTURE cancela também as parcelas/ocorrências seguintes em aberto (e encerra a recorrência)
+         * @enum {string}
+         */
+        CancelScope: "ONE" | "THIS_AND_FUTURE";
+        CancelObligationDto: {
+            /** @example Lançado em duplicidade */
+            reason: string;
+            /**
+             * @description THIS_AND_FUTURE cancela também as parcelas/ocorrências seguintes em aberto (e encerra a recorrência)
+             * @default ONE
+             */
+            scope: components["schemas"]["CancelScope"];
+        };
+        SettleDto: {
+            /** Format: uuid */
+            accountId: string;
+            /**
+             * Format: date
+             * @description Data efetiva (padrão: hoje; não pode ser futura)
+             * @example 2026-10-15
+             */
+            settledAt?: string;
+            method: components["schemas"]["PaymentMethod"];
+            /** @description Chave gerada pelo cliente por tentativa */
+            idempotencyKey: string;
+            /**
+             * @description Valor desta liquidação (padrão: todo o saldo em aberto). Parcial é permitido.
+             * @example 1500.00
+             */
+            amount?: string;
+            notes?: Record<string, never> | null;
+        };
+        PayableSettlementResultDto: {
+            settlement: components["schemas"]["SettlementDto"];
+            payable: components["schemas"]["PayableDto"];
+        };
+        /** @enum {string} */
+        ReceivableStatusFilter: "PENDING" | "PARTIALLY_RECEIVED" | "RECEIVED" | "CANCELED" | "OPEN" | "OVERDUE";
+        /** @enum {string} */
+        ReceivableStatus: "PENDING" | "PARTIALLY_RECEIVED" | "RECEIVED" | "CANCELED";
+        ReceivableDto: {
+            /** Format: uuid */
+            id: string;
+            description: string;
+            category: components["schemas"]["CategoryRefDto"];
+            amount: string;
+            receivedAmount: string;
+            /** @description Saldo em aberto = valor − recebido */
+            openAmount: string;
+            /** @example 2026-10 */
+            competence: string;
+            /** Format: date */
+            dueDate: string;
+            status: components["schemas"]["ReceivableStatus"];
+            /** @description Derivado: em aberto e vencimento antes de hoje */
+            overdue: boolean;
+            kind: components["schemas"]["EntryKind"];
+            installmentNumber: number | null;
+            installmentCount: number | null;
+            /** Format: uuid */
+            installmentGroupId: string | null;
+            /** Format: uuid */
+            recurrenceRuleId: string | null;
+            vehicle: components["schemas"]["VehicleRefDto"] | null;
+            notes: string | null;
+            /** Format: date-time */
+            canceledAt: string | null;
+            cancelReason: string | null;
+            attachmentsCount: number;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ReceivableListDto: {
+            items: components["schemas"]["ReceivableDto"][];
+            total: number;
+            page: number;
+            pageSize: number;
+            /** @description Totais de todo o filtro (não só da página) */
+            summary: components["schemas"]["ObligationSummaryDto"];
+        };
+        ReceivableDetailDto: {
+            /** Format: uuid */
+            id: string;
+            description: string;
+            category: components["schemas"]["CategoryRefDto"];
+            amount: string;
+            receivedAmount: string;
+            /** @description Saldo em aberto = valor − recebido */
+            openAmount: string;
+            /** @example 2026-10 */
+            competence: string;
+            /** Format: date */
+            dueDate: string;
+            status: components["schemas"]["ReceivableStatus"];
+            /** @description Derivado: em aberto e vencimento antes de hoje */
+            overdue: boolean;
+            kind: components["schemas"]["EntryKind"];
+            installmentNumber: number | null;
+            installmentCount: number | null;
+            /** Format: uuid */
+            installmentGroupId: string | null;
+            /** Format: uuid */
+            recurrenceRuleId: string | null;
+            vehicle: components["schemas"]["VehicleRefDto"] | null;
+            notes: string | null;
+            /** Format: date-time */
+            canceledAt: string | null;
+            cancelReason: string | null;
+            attachmentsCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            settlements: components["schemas"]["SettlementDto"][];
+            attachments: components["schemas"]["AttachmentDto"][];
+            allocations: components["schemas"]["AllocationDto"][];
+        };
+        CreateReceivableDto: {
+            /** @example Contrato Escola Municipal — outubro */
+            description: string;
+            /**
+             * Format: uuid
+             * @description Categoria de receita ativa
+             */
+            categoryId: string;
+            /**
+             * @description Valor; em receita parcelada é o valor TOTAL, dividido entre as parcelas
+             * @example 1500.00
+             */
+            amount: string;
+            /**
+             * @description Competência (mês a que a receita pertence)
+             * @example 2026-10
+             */
+            competence: string;
+            /**
+             * Format: date
+             * @description Vencimento (da primeira parcela/ocorrência)
+             * @example 2026-10-15
+             */
+            dueDate: string;
+            /**
+             * Format: uuid
+             * @description Veículo: a receita é atribuída 100% a ele
+             */
+            vehicleId?: Record<string, never> | null;
+            notes?: Record<string, never> | null;
+            /** @default SINGLE */
+            kind: components["schemas"]["EntryKind"];
+            /** @description Obrigatório quando kind = INSTALLMENT */
+            installmentCount?: number;
+            /** @description Obrigatório quando kind = RECURRING */
+            recurrence?: components["schemas"]["RecurrenceInputDto"];
+            /** @description Lançar já recebido (somente kind = SINGLE) */
+            settleNow?: components["schemas"]["SettleNowDto"];
+        };
+        CreateReceivableResultDto: {
+            /** @description Obrigações criadas (1 avulsa, n parcelas ou as ocorrências já geradas da recorrência) */
+            items: components["schemas"]["ReceivableDto"][];
+            /** Format: uuid */
+            recurrenceRuleId: string | null;
+        };
+        UpdateReceivableDto: {
+            description?: string;
+            /** Format: uuid */
+            categoryId?: string;
+            /**
+             * @description Não pode ficar abaixo do valor já recebido
+             * @example 1500.00
+             */
+            amount?: string;
+            /** @example 2026-10 */
+            competence?: string;
+            /**
+             * Format: date
+             * @example 2026-10-15
+             */
+            dueDate?: string;
+            /** Format: uuid */
+            vehicleId?: Record<string, never> | null;
+            notes?: Record<string, never> | null;
+        };
+        ReceivableSettlementResultDto: {
+            settlement: components["schemas"]["SettlementDto"];
+            receivable: components["schemas"]["ReceivableDto"];
         };
     };
     responses: never;
@@ -1426,6 +2772,1308 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["TokenResponseDto"];
                 };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Categories_list: {
+        parameters: {
+            query?: {
+                type?: components["schemas"]["CategoryType"];
+                /** @description Inclui categorias desativadas */
+                includeInactive?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryDto"][];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Categories_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCategoryDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Categories_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCategoryDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Accounts_list: {
+        parameters: {
+            query?: {
+                includeInactive?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Accounts_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAccountDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Accounts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Accounts_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAccountDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Accounts_statement: {
+        parameters: {
+            query?: {
+                /** @description Início (padrão: 1º dia do mês atual) */
+                from?: string;
+                /** @description Fim (padrão: hoje) */
+                to?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StatementDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Accounts_adjust: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdjustmentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdjustmentResultDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Transfers_list: {
+        parameters: {
+            query?: {
+                /** @description Início (padrão: 1º dia do mês atual) */
+                from?: string;
+                /** @description Fim (padrão: hoje) */
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransferDto"][];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Transfers_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTransferDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransferDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Transfers_reverse: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReverseDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransferDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Settlements_reverse: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReverseSettlementDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettlementDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Recurrences_list: {
+        parameters: {
+            query?: {
+                target?: components["schemas"]["RecurrenceTarget"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecurrenceRuleDto"][];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Recurrences_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateRecurrenceDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecurrenceRuleDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Recurrences_stop: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecurrenceRuleDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Vehicles_list: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["VehicleStatus"];
+                /** @description Busca por nome ou placa */
+                search?: string;
+                /** @description Inclui veículos arquivados */
+                archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Vehicles_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateVehicleDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Vehicles_get: {
+        parameters: {
+            query?: {
+                /** @description Competência inicial (AAAA-MM). Padrão: 11 meses antes do mês atual */
+                from?: string;
+                /** @description Competência final (AAAA-MM). Padrão: mês atual */
+                to?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Vehicles_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Vehicles_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateVehicleDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Vehicles_archive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Vehicles_restore: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Dashboard_get: {
+        parameters: {
+            query?: {
+                /** @description Competência/mês inicial (padrão: mês atual) */
+                from?: string;
+                /** @description Competência/mês final (padrão: igual ao inicial) */
+                to?: string;
+                /** @description Considera só o que foi atribuído a este veículo */
+                vehicleId?: string;
+                categoryId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Payables_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                /** @description Vencimento a partir de */
+                dueFrom?: string;
+                /** @description Vencimento até */
+                dueTo?: string;
+                /** @description Competência a partir de */
+                competenceFrom?: string;
+                /** @description Competência até */
+                competenceTo?: string;
+                categoryId?: string;
+                vehicleId?: string;
+                /** @description Busca na descrição */
+                search?: string;
+                /** @description OPEN = pendente ou parcial; OVERDUE = em aberto e vencida */
+                status?: components["schemas"]["PayableStatusFilter"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayableListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Payables_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePayableDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatePayableResultDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Payables_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayableDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Payables_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePayableDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayableDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Payables_cancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelObligationDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayableDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Payables_pay: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SettleDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayableSettlementResultDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Receivables_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                /** @description Vencimento a partir de */
+                dueFrom?: string;
+                /** @description Vencimento até */
+                dueTo?: string;
+                /** @description Competência a partir de */
+                competenceFrom?: string;
+                /** @description Competência até */
+                competenceTo?: string;
+                categoryId?: string;
+                vehicleId?: string;
+                /** @description Busca na descrição */
+                search?: string;
+                /** @description OPEN = pendente ou parcial; OVERDUE = em aberto e vencida */
+                status?: components["schemas"]["ReceivableStatusFilter"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceivableListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Receivables_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReceivableDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateReceivableResultDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Receivables_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceivableDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Receivables_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateReceivableDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceivableDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Receivables_cancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelObligationDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceivableDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Receivables_receive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SettleDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceivableSettlementResultDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Attachments_upload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: binary
+                     * @description PDF, JPG, PNG ou WEBP
+                     */
+                    file: string;
+                    /** Format: uuid */
+                    payableId?: string;
+                    /** Format: uuid */
+                    receivableId?: string;
+                    /** Format: uuid */
+                    settlementId?: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttachmentDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Attachments_download: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                    "image/png": string;
+                    "image/jpeg": string;
+                    "image/webp": string;
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Attachments_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Erro (formato padrão) */
             default: {

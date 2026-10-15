@@ -14,6 +14,7 @@ import { useAuth } from '@/lib/auth';
 import { useTheme } from '@/lib/theme';
 import type { Company } from '@/api/types';
 import { CompanyForm } from '../companies/company-form';
+import { CategoriesCard } from './categories-card';
 
 export function SettingsPage() {
   const { can, me, logout } = useAuth();
@@ -54,7 +55,7 @@ export function SettingsPage() {
           </CardContent>
         </Card>
 
-        <div className="space-y-6">
+        <div className="space-y-6 lg:row-span-2">
           <Card>
             <CardHeader>
               <CardTitle>Sua conta</CardTitle>
@@ -72,6 +73,11 @@ export function SettingsPage() {
             </CardContent>
           </Card>
         </div>
+        {can('finance:read') && (
+          <div className="lg:col-span-2">
+            <CategoriesCard />
+          </div>
+        )}
       </div>
       <ConfirmDialog
         open={confirmLogoutAll}
