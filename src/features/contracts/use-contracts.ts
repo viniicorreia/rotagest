@@ -56,8 +56,8 @@ export function useContractors(enabled = true) {
   return useQuery({ queryKey: ['contractors'], queryFn: () => http.get<Contractor[]>('/contractors'), enabled });
 }
 
-export function useContracts(status: ContractStatus | '') {
-  return useQuery({ queryKey: ['contracts', status], queryFn: () => http.get<Contract[]>(`/contracts${status ? `?status=${status}` : ''}`) });
+export function useContracts(status: ContractStatus | '', enabled = true) {
+  return useQuery({ queryKey: ['contracts', status], queryFn: () => http.get<Contract[]>(`/contracts${status ? `?status=${status}` : ''}`), enabled });
 }
 
 export function useContract(id: string | null) {

@@ -2919,10 +2919,10 @@ export interface components {
             allocations: components["schemas"]["AllocationDto"][];
         };
         /**
-         * @description Rateio entre veículos: EQUAL (partes iguais), PERCENT ou FIXED (valores)
+         * @description Rateio entre veículos: EQUAL (partes iguais), PERCENT, FIXED (valores) ou REVENUE_PROPORTIONAL (pela receita de cada veículo na competência; só despesas)
          * @enum {string}
          */
-        SplitMethod: "EQUAL" | "PERCENT" | "FIXED";
+        SplitMethod: "EQUAL" | "PERCENT" | "FIXED" | "REVENUE_PROPORTIONAL";
         AllocationInputDto: {
             /** Format: uuid */
             vehicleId: string;
@@ -2948,7 +2948,7 @@ export interface components {
             maxOccurrences?: number;
         };
         CreatePayableDto: {
-            /** @description Rateio entre veículos: EQUAL (partes iguais), PERCENT ou FIXED (valores) */
+            /** @description Rateio entre veículos: EQUAL (partes iguais), PERCENT, FIXED (valores) ou REVENUE_PROPORTIONAL (pela receita de cada veículo na competência; só despesas) */
             allocationMethod?: components["schemas"]["SplitMethod"];
             /** @description Veículos do rateio (2 a 50). Substitui vehicleId. Envie [] na edição para desfazer o rateio. */
             allocations?: components["schemas"]["AllocationInputDto"][];
@@ -2999,7 +2999,7 @@ export interface components {
             recurrenceRuleId: string | null;
         };
         UpdatePayableDto: {
-            /** @description Rateio entre veículos: EQUAL (partes iguais), PERCENT ou FIXED (valores) */
+            /** @description Rateio entre veículos: EQUAL (partes iguais), PERCENT, FIXED (valores) ou REVENUE_PROPORTIONAL (pela receita de cada veículo na competência; só despesas) */
             allocationMethod?: components["schemas"]["SplitMethod"];
             /** @description Veículos do rateio (2 a 50). Substitui vehicleId. Envie [] na edição para desfazer o rateio. */
             allocations?: components["schemas"]["AllocationInputDto"][];
@@ -3488,7 +3488,7 @@ export interface components {
             allocations: components["schemas"]["AllocationDto"][];
         };
         CreateReceivableDto: {
-            /** @description Rateio entre veículos: EQUAL (partes iguais), PERCENT ou FIXED (valores) */
+            /** @description Rateio entre veículos: EQUAL (partes iguais), PERCENT, FIXED (valores) ou REVENUE_PROPORTIONAL (pela receita de cada veículo na competência; só despesas) */
             allocationMethod?: components["schemas"]["SplitMethod"];
             /** @description Veículos do rateio (2 a 50). Substitui vehicleId. Envie [] na edição para desfazer o rateio. */
             allocations?: components["schemas"]["AllocationInputDto"][];
@@ -3537,7 +3537,7 @@ export interface components {
             recurrenceRuleId: string | null;
         };
         UpdateReceivableDto: {
-            /** @description Rateio entre veículos: EQUAL (partes iguais), PERCENT ou FIXED (valores) */
+            /** @description Rateio entre veículos: EQUAL (partes iguais), PERCENT, FIXED (valores) ou REVENUE_PROPORTIONAL (pela receita de cada veículo na competência; só despesas) */
             allocationMethod?: components["schemas"]["SplitMethod"];
             /** @description Veículos do rateio (2 a 50). Substitui vehicleId. Envie [] na edição para desfazer o rateio. */
             allocations?: components["schemas"]["AllocationInputDto"][];
