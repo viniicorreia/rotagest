@@ -95,7 +95,7 @@ export function CostsPage() {
             ))}
           </NativeSelect>
         </div>
-        <p className="text-xs capitalize text-muted-foreground">{formatMonthBR(month, true)}</p>
+        <p className="text-xs text-muted-foreground first-letter:uppercase">{formatMonthBR(month, true)}</p>
       </Card>
 
       {tab === 'summary' && <SummaryTab month={month} vehicleId={vehicleId} />}
