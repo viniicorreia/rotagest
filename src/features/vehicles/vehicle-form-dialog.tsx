@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -9,8 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Field } from '@/components/ui/field';
 import { Input, NativeSelect } from '@/components/ui/input';
+import { MoneyInput } from '@/components/ui/money-input';
 import { VEHICLE_STATUS_LABELS } from '../finance/labels';
 import { useInvalidateFinance } from '../finance/use-finance';
+import { parseRateInput, sameRate, toRateInput } from '../mileage/units';
 
 const PLATE = /^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/;
 const currentYear = new Date().getFullYear();
@@ -26,6 +29,8 @@ const schema = z.object({
   year: z.string().refine((v) => !v || (/^\d{4}$/.test(v) && +v >= 1950 && +v <= currentYear + 1), 'Ano inválido'),
   odometerKm: z.string().refine((v) => !v || /^\d{1,7}$/.test(v), 'Informe um número inteiro'),
   status: z.enum(['ACTIVE', 'MAINTENANCE', 'INACTIVE']),
+  ratePerKm: z.string().refine((v) => !v.trim() || parseRateInput(v) !== null, 'Valor inválido (ex.: 3,50; até 4 casas)'),
+  applyRateToUnbilled: z.boolean(),
   notes: z.string().trim().max(1000),
 });
 type FormIn = z.input<typeof schema>;
@@ -33,8 +38,13 @@ type FormOut = z.output<typeof schema>;
 
 export function VehicleFormDialog({ open, onOpenChange, editing }: { open: boolean; onOpenChange: (o: boolean) => void; editing?: Vehicle | null }) {
   const invalidate = useInvalidateFinance();
+  const qc = useQueryClient();
   const form = useForm<FormIn, unknown, FormOut>({ resolver: zodResolver(schema) });
   const errors = form.formState.errors;
+  const rateInput = form.watch('ratePerKm') ?? '';
+  const newRate = rateInput.trim() ? parseRateInput(rateInput) : null;
+  // Só pergunta sobre os dias já lançados quando a taxa realmente muda.
+  const rateChanged = !!editing && (rateInput.trim() === '' || newRate !== null) && !sameRate(editing.ratePerKm, newRate);
 
   useEffect(() => {
     if (open)
@@ -46,6 +56,8 @@ export function VehicleFormDialog({ open, onOpenChange, editing }: { open: boole
         year: editing?.year ? String(editing.year) : '',
         odometerKm: editing ? String(editing.odometerKm) : '',
         status: editing?.status ?? 'ACTIVE',
+        ratePerKm: toRateInput(editing?.ratePerKm),
+        applyRateToUnbilled: true,
         notes: editing?.notes ?? '',
       });
   }, [open, editing, form]);
@@ -59,12 +71,13 @@ export function VehicleFormDialog({ open, onOpenChange, editing }: { open: boole
       year: v.year ? Number(v.year) : null,
       odometerKm: v.odometerKm ? Number(v.odometerKm) : 0,
       status: v.status,
+      ratePerKm: v.ratePerKm.trim() ? parseRateInput(v.ratePerKm) : null,
       notes: v.notes || null,
     };
     try {
-      if (editing) await http.patch(`/vehicles/${editing.id}`, body);
+      if (editing) await http.patch(`/vehicles/${editing.id}`, rateChanged ? { ...body, applyRateToUnbilled: v.applyRateToUnbilled } : body);
       else await http.post('/vehicles', body);
-      await invalidate();
+      await Promise.all([invalidate(), qc.invalidateQueries({ queryKey: ['daily-logs'] })]);
       toast.success(editing ? 'Veículo atualizado' : 'Veículo cadastrado');
       onOpenChange(false);
     } catch (e) {
@@ -109,6 +122,18 @@ export function VehicleFormDialog({ open, onOpenChange, editing }: { open: boole
               </NativeSelect>
             </Field>
           </div>
+          <Field id="v-rate" label="Valor por km (R$)" error={errors.ratePerKm?.message} hint="Quanto o veículo fatura por km rodado. Deixe vazio se não cobra por km.">
+            <MoneyInput id="v-rate" placeholder="3,50" {...form.register('ratePerKm')} aria-invalid={!!errors.ratePerKm} />
+          </Field>
+          {rateChanged && (
+            <label className="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border p-3 text-sm">
+              <input type="checkbox" className="mt-0.5 size-4 accent-[var(--primary)]" {...form.register('applyRateToUnbilled')} />
+              <span>
+                <span className="font-medium">Recalcular os dias ainda não faturados</span>
+                <span className="block text-xs text-muted-foreground">Os km já registrados e não faturados passam a usar o novo valor. Dias já faturados não mudam.</span>
+              </span>
+            </label>
+          )}
           <Field id="v-notes" label="Observações" error={errors.notes?.message}>
             <Input id="v-notes" {...form.register('notes')} />
           </Field>

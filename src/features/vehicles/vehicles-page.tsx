@@ -17,6 +17,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/lib/auth';
 import { VEHICLE_STATUS_LABELS } from '../finance/labels';
 import { useInvalidateFinance, useVehicles } from '../finance/use-finance';
+import { formatRate } from '../mileage/units';
 import { UsageMeter } from '../subscriptions/usage-meter';
 import { VehicleFormDialog } from './vehicle-form-dialog';
 
@@ -125,8 +126,9 @@ export function VehiclesPage() {
                 </Link>
                 <p className="text-sm tabular-nums text-muted-foreground">{formatPlate(v.plate)}</p>
                 <p className="truncate text-xs text-muted-foreground">{[v.brand, v.model, v.year].filter(Boolean).join(' · ') || 'Sem modelo informado'}</p>
-                <div className="mt-2">
+                <div className="mt-2 flex flex-wrap items-center gap-2">
                   <VehicleStatusBadge vehicle={v} />
+                  {v.ratePerKm ? <span className="text-xs tabular-nums text-muted-foreground">{formatRate(v.ratePerKm)}</span> : null}
                 </div>
               </div>
               {canManage && (
