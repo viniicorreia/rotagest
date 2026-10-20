@@ -20,7 +20,7 @@ export function SelectCompanyPage() {
       <Card>
         <CardHeader>
           <CardTitle>Escolha a empresa</CardTitle>
-          <CardDescription>Você tem acesso a mais de uma empresa.</CardDescription>
+          <CardDescription>Escolha com qual empresa você quer trabalhar agora.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-2">
           {me?.companies.map((c) => (
