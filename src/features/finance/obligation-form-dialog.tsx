@@ -26,7 +26,8 @@ const money = z.string().refine((v) => {
 
 /** Percentual do rateio: até 3 dígitos e 4 casas ("33,3333"). */
 const PERCENT = /^\d{1,3}([.,]\d{1,4})?$/;
-const SPLIT_METHODS = ['EQUAL', 'PERCENT', 'FIXED'] as const satisfies readonly SplitMethod[];
+const SPLIT_METHODS = ['EQUAL', 'PERCENT', 'FIXED', 'REVENUE_PROPORTIONAL'] as const satisfies readonly SplitMethod[];
+const SPLIT_SHORT_LABELS: Partial<Record<SplitMethod, string>> = { REVENUE_PROPORTIONAL: 'Pela receita' };
 
 const splitItem = z.object({ vehicleId: z.string(), percent: z.string(), amount: z.string() });
 
@@ -95,7 +96,7 @@ function vehicleDefaults(editing?: ObligationDetail | null): Pick<FormValues, 'v
   const split = editing?.allocations.filter((a) => a.method !== 'DIRECT' && a.vehicle) ?? [];
   if (split.length) {
     const first = split[0].method;
-    const method: SplitMethod = first === 'EQUAL' || first === 'PERCENT' ? first : 'FIXED';
+    const method: SplitMethod = first === 'EQUAL' || first === 'PERCENT' || first === 'REVENUE_PROPORTIONAL' ? first : 'FIXED';
     return {
       vehicleMode: 'split',
       vehicleId: '',
@@ -255,6 +256,7 @@ export function ObligationFormDialog({ config, open, onOpenChange, editing }: Pr
   const splitHint = (() => {
     if (vehicleMode !== 'split') return null;
     if (splitMethod === 'EQUAL') return 'O valor é dividido em partes iguais entre os veículos.';
+    if (splitMethod === 'REVENUE_PROPORTIONAL') return 'Cada veículo paga na proporção da receita que gerou na competência. Veículos sem receita no mês ficam de fora.';
     if (splitMethod === 'PERCENT') {
       const units = splitItems.reduce((sum, i) => {
         if (!PERCENT.test(i.percent)) return sum;
@@ -373,7 +375,7 @@ export function ObligationFormDialog({ config, open, onOpenChange, editing }: Pr
                     label="Como dividir"
                     value={splitMethod}
                     onChange={(m) => form.setValue('splitMethod', m)}
-                    options={SPLIT_METHODS.map((m) => ({ value: m, label: ALLOCATION_METHOD_LABELS[m] }))}
+                    options={SPLIT_METHODS.filter((m) => isPayable || m !== 'REVENUE_PROPORTIONAL').map((m) => ({ value: m, label: SPLIT_SHORT_LABELS[m] ?? ALLOCATION_METHOD_LABELS[m] }))}
                   />
                   <ul className="space-y-2">
                     {split.fields.map((f, i) => {
