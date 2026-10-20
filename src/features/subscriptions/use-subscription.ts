@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { http } from '@/api/client';
-import type { SubscriptionInfo } from '@/api/types';
+import type { PublicPlanList, SubscriptionInfo } from '@/api/types';
 
 export function useSubscription(enabled = true) {
   return useQuery({ queryKey: ['subscription'], queryFn: () => http.get<SubscriptionInfo>('/subscription'), enabled });
@@ -13,3 +13,8 @@ export const SUBSCRIPTION_STATUS: Record<SubscriptionInfo['status'], { label: st
   CANCELED: { label: 'Cancelada', variant: 'secondary' },
   SUSPENDED: { label: 'Suspensa', variant: 'destructive' },
 };
+
+/** Planos públicos para comparação (GET /plans). */
+export function usePublicPlans(enabled = true) {
+  return useQuery({ queryKey: ['subscription', 'plans'], queryFn: () => http.get<PublicPlanList>('/plans'), enabled });
+}
