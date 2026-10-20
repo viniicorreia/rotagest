@@ -18,7 +18,7 @@ import { VehiclesPage } from '@/features/vehicles/vehicles-page';
 import { ContractsPage } from '@/features/contracts/contracts-page';
 import { CostsPage } from '@/features/costs/costs-page';
 import { ApprovalsPage } from '@/features/driver/approvals-page';
-import { MyDayPage } from '@/features/driver/my-day-page';
+import { AppIndexRedirect, MyDayPage } from '@/features/driver/my-day-page';
 import { OperationsPage } from '@/features/fleet/operations-page';
 import { KmPage } from '@/features/mileage/km-page';
 import { NotFoundPage } from './error-pages';
@@ -47,7 +47,7 @@ export const router = createBrowserRouter([
             path: '/app',
             element: <AppLayout />,
             children: [
-              { index: true, element: <Navigate to="dashboard" replace /> },
+              { index: true, element: <AppIndexRedirect /> },
               { path: 'dashboard', element: <DashboardPage /> },
               {
                 path: 'expenses',
@@ -116,7 +116,7 @@ export const router = createBrowserRouter([
               {
                 path: 'contracts',
                 element: (
-                  <RequirePermission permission="finance:read">
+                  <RequirePermission permission="contracts:read">
                     <ContractsPage />
                   </RequirePermission>
                 ),

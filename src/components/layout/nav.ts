@@ -24,7 +24,7 @@ export const NAV_ITEMS: NavItem[] = [
   { to: '/app/revenues', label: 'Receitas', icon: ArrowDownCircle, permission: 'finance:read' },
   { to: '/app/vehicles', label: 'Veículos', icon: Bus, permission: 'fleet:read' },
   { to: '/app/operations', label: 'Motoristas e rotas', shortLabel: 'Rotas', icon: Route, permission: 'fleet:read' },
-  { to: '/app/contracts', label: 'Contratos', icon: FileSignature, permission: 'finance:read' },
+  { to: '/app/contracts', label: 'Contratos', icon: FileSignature, permission: 'contracts:read' },
   { to: '/app/costs', label: 'Manutenção e combustível', shortLabel: 'Custos', icon: Wrench, permission: 'finance:read' },
   { to: '/app/approvals', label: 'Aprovações', icon: ClipboardCheck, permission: 'expenses:approve' },
   { to: '/app/accounts', label: 'Contas', icon: Landmark, permission: 'finance:read' },

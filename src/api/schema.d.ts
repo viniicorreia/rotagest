@@ -2573,6 +2573,17 @@ export interface components {
         };
         /** @enum {string} */
         EntryKind: "SINGLE" | "RECURRING" | "INSTALLMENT";
+        AttachmentDto: {
+            /** Format: uuid */
+            id: string;
+            originalName: string;
+            mimeType: string;
+            sizeBytes: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: uuid */
+            settlementId: string | null;
+        };
         DriverExpenseDto: {
             /** Format: uuid */
             id: string;
@@ -2610,6 +2621,7 @@ export interface components {
             createdAt: string;
             driver: components["schemas"]["RefDto"] | null;
             fuel: components["schemas"]["FuelingDto"] | null;
+            attachments: components["schemas"]["AttachmentDto"][];
         };
         DriverExpenseListDto: {
             items: components["schemas"]["DriverExpenseDto"][];
@@ -2721,17 +2733,6 @@ export interface components {
             pageSize: number;
             /** @description Totais de todo o filtro (não só da página) */
             summary: components["schemas"]["ObligationSummaryDto"];
-        };
-        AttachmentDto: {
-            /** Format: uuid */
-            id: string;
-            originalName: string;
-            mimeType: string;
-            sizeBytes: number;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: uuid */
-            settlementId: string | null;
         };
         /** @enum {string} */
         AllocationMethod: "DIRECT" | "EQUAL" | "PERCENT" | "FIXED" | "REVENUE_PROPORTIONAL";
