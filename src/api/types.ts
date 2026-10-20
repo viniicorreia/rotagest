@@ -102,3 +102,14 @@ export type CategoryRef = S['CategoryRefDto'];
 export type ExpenseCategoryList = S['ExpenseCategoryListDto'];
 export type AllocationMethod = S['AllocationMethod'];
 export type SplitMethod = S['SplitMethod'];
+
+// Fase 4 — relatórios e fechamento
+export type ReportKey = S['ReportKey'];
+export type ReportCatalog = S['ReportCatalogDto'];
+export type Report = S['ReportDto'];
+export type ReportSection = S['ReportSectionDto'];
+export type ReportColumn = S['ReportColumnDto'];
+export type ClosingList = S['ClosingListDto'];
+export type Closing = S['ClosingDto'];
+export type ClosingDetail = S['ClosingDetailDto'];
+export type ClosingSnapshot = S['ClosingSnapshotDto'];

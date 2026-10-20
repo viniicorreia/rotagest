@@ -1106,6 +1106,139 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Reports_catalog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Relatório da empresa ativa com filtros e comparativo opcional */
+        get: operations["Reports_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/{key}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Reports_export"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/closings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Situação do fechamento dos 12 meses do ano */
+        get: operations["Closings_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/closings/{month}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Closings_get"];
+        put?: never;
+        /** Confirma o fechamento: grava o snapshot e bloqueia lançamentos do mês */
+        post: operations["Closings_close"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/closings/{month}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Prévia do fechamento (não grava nada) */
+        get: operations["Closings_preview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/closings/{month}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reabre o mês com justificativa (auditado com o snapshot anterior) */
+        post: operations["Closings_reopen"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/closings/{month}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Closings_export"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/contractors": {
         parameters: {
             query?: never;
@@ -2926,6 +3059,146 @@ export interface components {
         PayableSettlementResultDto: {
             settlement: components["schemas"]["SettlementDto"];
             payable: components["schemas"]["PayableDto"];
+        };
+        /** @enum {string} */
+        ReportKey: "cash-flow" | "revenue-by-contract" | "expenses-by-category" | "result-by-vehicle" | "result-by-route" | "result-by-period" | "payables" | "receivables" | "fuel" | "maintenance";
+        ReportCatalogItemDto: {
+            key: components["schemas"]["ReportKey"];
+            title: string;
+        };
+        ReportCatalogDto: {
+            items: components["schemas"]["ReportCatalogItemDto"][];
+        };
+        /** @enum {string} */
+        ReportStatusFilter: "OPEN" | "OVERDUE" | "SETTLED";
+        /** @enum {string} */
+        ReportRegime: "CASH" | "ACCRUAL" | "DUE" | "OPERATIONAL";
+        /** @enum {string} */
+        ReportColumnType: "text" | "money" | "number" | "percent" | "date" | "month";
+        ReportColumnDto: {
+            key: string;
+            label: string;
+            type: components["schemas"]["ReportColumnType"];
+            sum?: boolean;
+        };
+        ReportSectionDto: {
+            title: string;
+            columns: components["schemas"]["ReportColumnDto"][];
+            /** @description Valores por coluna: dinheiro em string "1234.56", datas "AAAA-MM-DD", meses "AAAA-MM", percentuais "12.34" */
+            rows: {
+                [key: string]: (string | number) | null;
+            }[];
+            totals: {
+                [key: string]: (string | number) | null;
+            } | null;
+        };
+        ReportComparisonDto: {
+            from: string;
+            to: string;
+            totals: {
+                [key: string]: (string | number) | null;
+            };
+        };
+        ReportDto: {
+            key: components["schemas"]["ReportKey"];
+            title: string;
+            regime: components["schemas"]["ReportRegime"];
+            /** @example 2026-10 */
+            from: string;
+            /** @example 2026-10 */
+            to: string;
+            filters: {
+                [key: string]: string;
+            };
+            sections: components["schemas"]["ReportSectionDto"][];
+            notes: string[];
+            comparison: components["schemas"]["ReportComparisonDto"] | null;
+        };
+        /** @enum {string} */
+        ClosingState: "OPEN" | "CLOSED" | "REOPENED";
+        UserRefDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        ClosingDto: {
+            /** @example 2026-09 */
+            month: string;
+            status: components["schemas"]["ClosingState"];
+            /** @description 0 = nunca fechado */
+            version: number;
+            /** Format: date-time */
+            closedAt: string | null;
+            closedBy: components["schemas"]["UserRefDto"] | null;
+            /** Format: date-time */
+            reopenedAt: string | null;
+            reopenedBy: components["schemas"]["UserRefDto"] | null;
+            reopenReason: string | null;
+            /** @description O mês já terminou e pode ser fechado */
+            closable: boolean;
+        };
+        ClosingListDto: {
+            year: number;
+            items: components["schemas"]["ClosingDto"][];
+        };
+        ClosingTotalsDto: {
+            revenue: string;
+            expense: string;
+            /** @description Resultado gerencial (competência) */
+            result: string;
+            received: string;
+            paid: string;
+            /** @description Resultado de caixa */
+            cashResult: string;
+            /** @description Saldo das contas no último dia do mês */
+            balance: string;
+        };
+        ClosingPendingDto: {
+            payablesOpenCount: number;
+            payablesOpen: string;
+            receivablesOpenCount: number;
+            receivablesOpen: string;
+            /** @description Despesas de motorista do mês aguardando aprovação */
+            pendingApprovals: number;
+            /** @description Dias de km do mês com valor ainda não faturados */
+            unbilledKmDays: number;
+            unbilledKmAmount: string;
+        };
+        ClosingSnapshotDto: {
+            /** @example 2026-09 */
+            month: string;
+            /** Format: date-time */
+            generatedAt: string;
+            totals: components["schemas"]["ClosingTotalsDto"];
+            pending: components["schemas"]["ClosingPendingDto"];
+            sections: components["schemas"]["ReportSectionDto"][];
+            warnings: string[];
+        };
+        ClosingDetailDto: {
+            /** @example 2026-09 */
+            month: string;
+            status: components["schemas"]["ClosingState"];
+            /** @description 0 = nunca fechado */
+            version: number;
+            /** Format: date-time */
+            closedAt: string | null;
+            closedBy: components["schemas"]["UserRefDto"] | null;
+            /** Format: date-time */
+            reopenedAt: string | null;
+            reopenedBy: components["schemas"]["UserRefDto"] | null;
+            reopenReason: string | null;
+            /** @description O mês já terminou e pode ser fechado */
+            closable: boolean;
+            /** @description Valores gravados no fechamento */
+            snapshot: components["schemas"]["ClosingSnapshotDto"] | null;
+        };
+        ConfirmClosingDto: {
+            /** @description Versão vista na prévia; se outra pessoa fechar antes, a confirmação falha (409) */
+            expectedVersion?: number;
+        };
+        ReopenClosingDto: {
+            /** @example Nota fiscal de outubro lançada com valor errado */
+            reason: string;
         };
         /** @enum {string} */
         ContractorKind: "SCHOOL" | "CITY_HALL" | "PRIVATE_COMPANY" | "INDIVIDUAL" | "OTHER";
@@ -6074,6 +6347,314 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["PayableSettlementResultDto"];
                 };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Reports_catalog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportCatalogDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Reports_get: {
+        parameters: {
+            query?: {
+                /** @description Mês inicial (padrão: mês atual) */
+                from?: string;
+                /** @description Mês final (padrão: o inicial; até 24 meses) */
+                to?: string;
+                vehicleId?: string;
+                routeId?: string;
+                contractId?: string;
+                categoryId?: string;
+                /** @description Fluxo de caixa de uma conta */
+                accountId?: string;
+                /** @description Contas a pagar/receber */
+                status?: components["schemas"]["ReportStatusFilter"];
+                /** @description Inclui os totais do período anterior de mesmo tamanho */
+                compare?: boolean;
+            };
+            header?: never;
+            path: {
+                key: components["schemas"]["ReportKey"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Reports_export: {
+        parameters: {
+            query: {
+                /** @description Mês inicial (padrão: mês atual) */
+                from?: string;
+                /** @description Mês final (padrão: o inicial; até 24 meses) */
+                to?: string;
+                vehicleId?: string;
+                routeId?: string;
+                contractId?: string;
+                categoryId?: string;
+                /** @description Fluxo de caixa de uma conta */
+                accountId?: string;
+                /** @description Contas a pagar/receber */
+                status?: components["schemas"]["ReportStatusFilter"];
+                /** @description Inclui os totais do período anterior de mesmo tamanho */
+                compare?: boolean;
+                format: "pdf" | "xlsx";
+            };
+            header?: never;
+            path: {
+                key: components["schemas"]["ReportKey"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Arquivo PDF ou Excel com os mesmos números do relatório */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Closings_list: {
+        parameters: {
+            query?: {
+                /** @description Ano (padrão: o atual) */
+                year?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClosingListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Closings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                month: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClosingDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Closings_close: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                month: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmClosingDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClosingDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Closings_preview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                month: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClosingSnapshotDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Closings_reopen: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                month: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReopenClosingDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClosingDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Closings_export: {
+        parameters: {
+            query: {
+                format: "pdf" | "xlsx";
+            };
+            header?: never;
+            path: {
+                month: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Fechamento (ou prévia) em PDF ou Excel */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Erro (formato padrão) */
             default: {

@@ -1,4 +1,4 @@
-import { ArrowDownCircle, ArrowUpCircle, Bus, ClipboardCheck, CreditCard, FileSignature, Gauge, Landmark, LayoutDashboard, Route, Settings, Sun, Users, Wrench, type LucideIcon } from 'lucide-react';
+import { ArrowDownCircle, ArrowUpCircle, Bus, CalendarCheck, ClipboardCheck, CreditCard, FileBarChart, FileSignature, Gauge, Landmark, LayoutDashboard, Route, Settings, Sun, Users, Wrench, type LucideIcon } from 'lucide-react';
 import type { Permission } from '@/api/types';
 
 export interface NavItem {
@@ -27,6 +27,8 @@ export const NAV_ITEMS: NavItem[] = [
   { to: '/app/contracts', label: 'Contratos', icon: FileSignature, permission: 'contracts:read' },
   { to: '/app/costs', label: 'Manutenção e combustível', shortLabel: 'Custos', icon: Wrench, permission: 'finance:read' },
   { to: '/app/approvals', label: 'Aprovações', icon: ClipboardCheck, permission: 'expenses:approve' },
+  { to: '/app/reports', label: 'Relatórios', icon: FileBarChart, permission: 'reports:read' },
+  { to: '/app/monthly-closing', label: 'Fechamento mensal', shortLabel: 'Fechamento', icon: CalendarCheck, permission: 'reports:read' },
   { to: '/app/accounts', label: 'Contas', icon: Landmark, permission: 'finance:read' },
   { to: '/app/team', label: 'Equipe', icon: Users, permission: 'members:read' },
   { to: '/app/subscription', label: 'Assinatura', shortLabel: 'Plano', icon: CreditCard, permission: 'subscription:read' },
