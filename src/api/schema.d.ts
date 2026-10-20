@@ -673,6 +673,371 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/drivers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Drivers_list"];
+        put?: never;
+        post: operations["Drivers_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/drivers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Exclui motorista sem histórico; com histórico, marque como inativo */
+        delete: operations["Drivers_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["Drivers_update"];
+        trace?: never;
+    };
+    "/api/v1/routes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Routes_list"];
+        put?: never;
+        post: operations["Routes_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/routes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Routes_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["Routes_update"];
+        trace?: never;
+    };
+    "/api/v1/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Assignments_list"];
+        put?: never;
+        /** Atribui veículo e/ou motorista a uma rota a partir de uma data */
+        post: operations["Assignments_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assignments/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Portal do motorista: rotas e veículos de hoje do usuário logado */
+        get: operations["Assignments_mine"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assignments/{id}/end": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Encerra a atribuição numa data (o histórico é mantido) */
+        post: operations["Assignments_end"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/daily-logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Registros diários de km; motorista vê só os próprios; valores só com finance:read */
+        get: operations["Mileage_list"];
+        put?: never;
+        /** Registra os km rodados por um veículo num dia (um registro por veículo por dia) */
+        post: operations["Mileage_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/daily-logs/billing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Quanto há a faturar por veículo no mês (km × R$/km) */
+        get: operations["Mileage_preview"];
+        put?: never;
+        /** Gera contas a receber com os km ainda não faturados do mês (uma por veículo) */
+        post: operations["Mileage_bill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/daily-logs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Mileage_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["Mileage_update"];
+        trace?: never;
+    };
+    "/api/v1/maintenances": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["FleetCosts_listMaintenances"];
+        put?: never;
+        /** Registra manutenção e gera a conta a pagar ligada ao veículo (opcionalmente já paga) */
+        post: operations["FleetCosts_createMaintenance"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/maintenances/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["FleetCosts_getMaintenance"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/maintenances/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancela a conta da manutenção (estorne pagamentos antes) */
+        post: operations["FleetCosts_cancelMaintenance"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fuelings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["FleetCosts_listFuelings"];
+        put?: never;
+        /** Registra abastecimento (litros × preço) e gera a conta a pagar */
+        post: operations["FleetCosts_createFueling"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fuelings/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["FleetCosts_cancelFueling"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fleet-costs/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Por veículo no mês: km, valor do km, combustível, manutenção, km/l e custo por km */
+        get: operations["FleetCosts_summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/my/expense-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["FleetCosts_myCategories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/my/expenses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["FleetCosts_listMine"];
+        put?: never;
+        /** Motorista envia uma despesa; fica aguardando aprovação */
+        post: operations["FleetCosts_createMine"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/my/expenses/{id}/withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["FleetCosts_withdrawMine"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/expense-approvals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["FleetCosts_listApprovals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/expense-approvals/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["FleetCosts_approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/expense-approvals/{id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["FleetCosts_reject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/payables": {
         parameters: {
             query?: never;
@@ -735,6 +1100,89 @@ export interface paths {
         put?: never;
         /** Registra pagamento total ou parcial (idempotente pela idempotencyKey) */
         post: operations["Payables_pay"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/contractors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Contractors_list"];
+        put?: never;
+        post: operations["Contractors_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/contractors/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Contractors_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["Contractors_update"];
+        trace?: never;
+    };
+    "/api/v1/contracts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Contracts_list"];
+        put?: never;
+        /** Cria o contrato como rascunho; ativar gera as contas a receber */
+        post: operations["Contracts_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/contracts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Contracts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Altera o contrato; vale para as competências ainda não geradas */
+        patch: operations["Contracts_update"];
+        trace?: never;
+    };
+    "/api/v1/contracts/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ativa, suspende, encerra ou cancela; encerrar/cancelar cancela as contas futuras sem recebimento */
+        post: operations["Contracts_status"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1422,6 +1870,11 @@ export interface components {
             year: number | null;
             odometerKm: number;
             status: components["schemas"]["VehicleStatus"];
+            /**
+             * @description R$ por km rodado; null = não definido
+             * @example 3.50
+             */
+            ratePerKm: string | null;
             notes: string | null;
             /** Format: date-time */
             archivedAt: string | null;
@@ -1478,6 +1931,11 @@ export interface components {
             year: number | null;
             odometerKm: number;
             status: components["schemas"]["VehicleStatus"];
+            /**
+             * @description R$ por km rodado; null = não definido
+             * @example 3.50
+             */
+            ratePerKm: string | null;
             notes: string | null;
             /** Format: date-time */
             archivedAt: string | null;
@@ -1508,6 +1966,11 @@ export interface components {
              */
             odometerKm?: number;
             status?: components["schemas"]["VehicleStatus"];
+            /**
+             * @description Quanto o veículo fatura por km rodado (R$/km, até 4 casas)
+             * @example 3.50
+             */
+            ratePerKm?: string | null;
             notes?: Record<string, never> | null;
         };
         UpdateVehicleDto: {
@@ -1530,7 +1993,17 @@ export interface components {
              */
             odometerKm?: number;
             status?: components["schemas"]["VehicleStatus"];
+            /**
+             * @description Quanto o veículo fatura por km rodado (R$/km, até 4 casas)
+             * @example 3.50
+             */
+            ratePerKm?: string | null;
             notes?: Record<string, never> | null;
+            /**
+             * @description Ao mudar ratePerKm, recalcula também os registros diários ainda não faturados
+             * @default true
+             */
+            applyRateToUnbilled: boolean;
         };
         AccountBalanceDto: {
             /** Format: uuid */
@@ -1630,19 +2103,570 @@ export interface components {
             expensesByCategory: components["schemas"]["CategoryAmountDto"][];
         };
         /** @enum {string} */
-        PayableStatusFilter: "PENDING" | "PARTIALLY_PAID" | "PAID" | "CANCELED" | "OPEN" | "OVERDUE";
+        EmploymentType: "EMPLOYEE" | "CONTRACTOR" | "PARTNER" | "OTHER";
+        RefDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        DriverDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            document: string;
+            phone: string | null;
+            /** Format: date */
+            hiredAt: string | null;
+            employmentType: components["schemas"]["EmploymentType"];
+            status: components["schemas"]["RecordStatus"];
+            /** @description Usuário vinculado (portal do motorista) */
+            member: components["schemas"]["RefDto"] | null;
+            /** @description Rotas em que está atribuído hoje */
+            currentRoutes: string[];
+        };
+        CreateDriverDto: {
+            /** @example José da Silva */
+            name: string;
+            /**
+             * @description CPF; pontos e traço são aceitos
+             * @example 52998224725
+             */
+            document: string;
+            phone?: string | null;
+            /**
+             * Format: date
+             * @description Data de admissão
+             * @example 2026-10-15
+             */
+            hiredAt?: string;
+            employmentType?: components["schemas"]["EmploymentType"];
+            status?: components["schemas"]["RecordStatus"];
+            /**
+             * Format: uuid
+             * @description Membro da empresa (usuário) que acessa o portal do motorista
+             */
+            memberId?: string | null;
+        };
+        UpdateDriverDto: {
+            /** @example José da Silva */
+            name?: string;
+            /**
+             * @description CPF; pontos e traço são aceitos
+             * @example 52998224725
+             */
+            document?: string;
+            phone?: string | null;
+            /**
+             * Format: date
+             * @description Data de admissão
+             * @example 2026-10-15
+             */
+            hiredAt?: string;
+            employmentType?: components["schemas"]["EmploymentType"];
+            status?: components["schemas"]["RecordStatus"];
+            /**
+             * Format: uuid
+             * @description Membro da empresa (usuário) que acessa o portal do motorista
+             */
+            memberId?: string | null;
+        };
         /** @enum {string} */
-        PayableStatus: "PENDING" | "PARTIALLY_PAID" | "PAID" | "CANCELED";
-        /** @enum {string} */
-        EntryKind: "SINGLE" | "RECURRING" | "INSTALLMENT";
+        TransportType: "SCHOOL" | "MUNICIPAL" | "CORPORATE" | "CHARTER" | "INTERCITY" | "OTHER";
         VehicleRefDto: {
             /** Format: uuid */
             id: string;
             name: string;
             plate: string;
         };
+        AssignmentSummaryDto: {
+            /** Format: uuid */
+            id: string;
+            vehicle: components["schemas"]["VehicleRefDto"] | null;
+            driver: components["schemas"]["RefDto"] | null;
+            /** Format: date */
+            startDate: string;
+            /** Format: date */
+            endDate: string | null;
+        };
+        RouteDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            description: string | null;
+            transportType: components["schemas"]["TransportType"];
+            region: string | null;
+            status: components["schemas"]["RecordStatus"];
+            /** @description Atribuições vigentes hoje */
+            current: components["schemas"]["AssignmentSummaryDto"][];
+        };
+        CreateRouteDto: {
+            /** @example Escola Municipal Centro — manhã */
+            name: string;
+            description?: string | null;
+            transportType?: components["schemas"]["TransportType"];
+            /** @example Zona Norte */
+            region?: string | null;
+            status?: components["schemas"]["RecordStatus"];
+        };
+        UpdateRouteDto: {
+            /** @example Escola Municipal Centro — manhã */
+            name?: string;
+            description?: string | null;
+            transportType?: components["schemas"]["TransportType"];
+            /** @example Zona Norte */
+            region?: string | null;
+            status?: components["schemas"]["RecordStatus"];
+        };
+        AssignmentDto: {
+            /** Format: uuid */
+            id: string;
+            vehicle: components["schemas"]["VehicleRefDto"] | null;
+            driver: components["schemas"]["RefDto"] | null;
+            /** Format: date */
+            startDate: string;
+            /** Format: date */
+            endDate: string | null;
+            route: components["schemas"]["RefDto"];
+            notes: string | null;
+            /** @description Vigente hoje */
+            active: boolean;
+        };
+        MyAssignmentsDto: {
+            /** @description Cadastro de motorista ligado ao seu usuário; null se não houver */
+            driver: components["schemas"]["RefDto"] | null;
+            /** @description Atribuições vigentes hoje */
+            assignments: components["schemas"]["AssignmentDto"][];
+            /** @description Veículos em que você pode registrar km hoje */
+            vehicles: components["schemas"]["VehicleRefDto"][];
+        };
+        CreateAssignmentDto: {
+            /** Format: uuid */
+            routeId: string;
+            /** Format: uuid */
+            vehicleId?: string | null;
+            /** Format: uuid */
+            driverId?: string | null;
+            /**
+             * Format: date
+             * @example 2026-10-01
+             */
+            startDate: string;
+            /**
+             * Format: date
+             * @description Último dia (vazio = sem data para terminar)
+             * @example 2026-10-15
+             */
+            endDate?: string;
+            notes?: string | null;
+        };
+        EndAssignmentDto: {
+            /**
+             * Format: date
+             * @description Último dia da atribuição
+             */
+            endDate: string;
+        };
+        DailyLogDto: {
+            /** Format: uuid */
+            id: string;
+            vehicle: components["schemas"]["VehicleRefDto"];
+            /** Format: date */
+            date: string;
+            /** @example 120.5 */
+            kmDriven: string;
+            odometerStart: number | null;
+            odometerEnd: number | null;
+            route: components["schemas"]["RefDto"] | null;
+            driver: components["schemas"]["RefDto"] | null;
+            /** @description R$/km aplicado; null sem finance:read ou sem taxa no veículo */
+            ratePerKm: string | null;
+            /** @description km × taxa; null sem finance:read ou sem taxa */
+            amount: string | null;
+            /** @description Já virou conta a receber (não pode mais ser alterado) */
+            billed: boolean;
+            /** Format: uuid */
+            receivableId: string | null;
+            notes: string | null;
+            /** @description O usuário logado pode editar ou excluir */
+            editable: boolean;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        DailyLogSummaryDto: {
+            days: number;
+            /** @example 2450.5 */
+            km: string;
+            /** @description null sem finance:read */
+            amount: string | null;
+            unbilledAmount: string | null;
+            /** @description Dias sem taxa definida no veículo (não entram no valor) */
+            missingRateDays: number;
+        };
+        DailyLogListDto: {
+            items: components["schemas"]["DailyLogDto"][];
+            summary: components["schemas"]["DailyLogSummaryDto"];
+        };
+        CreateDailyLogDto: {
+            /** Format: uuid */
+            vehicleId: string;
+            /**
+             * Format: date
+             * @example 2026-10-20
+             */
+            date: string;
+            /**
+             * @description km rodados no dia (1 casa). Pode ser omitido se informar os hodômetros.
+             * @example 120.5
+             */
+            kmDriven?: string;
+            /** @description Hodômetro na saída */
+            odometerStart?: number | null;
+            /** @description Hodômetro na chegada */
+            odometerEnd?: number | null;
+            /** Format: uuid */
+            routeId?: string | null;
+            /**
+             * Format: uuid
+             * @description Ignorado para motoristas (vale o cadastro deles)
+             */
+            driverId?: string | null;
+            notes?: string | null;
+        };
+        BillingPreviewRowDto: {
+            vehicle: components["schemas"]["VehicleRefDto"];
+            /** @description Taxa atual do veículo */
+            ratePerKm: string | null;
+            /** @description Dias a faturar */
+            days: number;
+            km: string;
+            /** @description Valor a faturar (dias sem taxa ficam de fora) */
+            amount: string;
+            missingRateDays: number;
+            /** @description Valor já faturado no mês */
+            billedAmount: string;
+            billedDays: number;
+        };
+        BillingPreviewDto: {
+            /** @example 2026-10 */
+            month: string;
+            vehicles: components["schemas"]["BillingPreviewRowDto"][];
+            totalAmount: string;
+        };
+        CreateBillingDto: {
+            /**
+             * @description Mês dos km rodados; vira a competência da conta a receber
+             * @example 2026-10
+             */
+            month: string;
+            /**
+             * Format: date
+             * @example 2026-11-05
+             */
+            dueDate: string;
+            /** @description Veículos a faturar (uma conta a receber por veículo) */
+            vehicleIds: string[];
+            /**
+             * Format: uuid
+             * @description Categoria de receita (padrão: Contratos)
+             */
+            categoryId?: string;
+        };
+        BillingResultItemDto: {
+            vehicle: components["schemas"]["VehicleRefDto"];
+            /** Format: uuid */
+            receivableId: string;
+            description: string;
+            days: number;
+            km: string;
+            amount: string;
+        };
+        BillingResultDto: {
+            items: components["schemas"]["BillingResultItemDto"][];
+        };
+        UpdateDailyLogDto: {
+            /** @example 120.5 */
+            kmDriven?: string;
+            odometerStart?: number | null;
+            odometerEnd?: number | null;
+            /** Format: uuid */
+            routeId?: string | null;
+            /** Format: uuid */
+            driverId?: string | null;
+            notes?: string | null;
+        };
+        /** @enum {string} */
+        MaintenanceType: "PREVENTIVE" | "CORRECTIVE" | "OIL_CHANGE" | "TIRES" | "MECHANICAL" | "ELECTRICAL" | "OTHER";
+        /** @enum {string} */
+        PayableStatus: "PENDING" | "PARTIALLY_PAID" | "PAID" | "CANCELED";
         /** @enum {string} */
         ApprovalStatus: "APPROVED" | "PENDING_APPROVAL" | "REJECTED";
+        CostPayableRefDto: {
+            /** Format: uuid */
+            id: string;
+            status: components["schemas"]["PayableStatus"];
+            approvalStatus: components["schemas"]["ApprovalStatus"];
+            paidAmount: string;
+            /** Format: date */
+            dueDate: string;
+        };
+        MaintenanceDto: {
+            /** Format: uuid */
+            id: string;
+            vehicle: components["schemas"]["VehicleRefDto"];
+            type: components["schemas"]["MaintenanceType"];
+            description: string;
+            /** Format: date */
+            date: string;
+            amount: string;
+            odometerKm: number | null;
+            supplierName: string | null;
+            notes: string | null;
+            payable: components["schemas"]["CostPayableRefDto"] | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        MaintenanceListDto: {
+            items: components["schemas"]["MaintenanceDto"][];
+            total: number;
+            page: number;
+            pageSize: number;
+            /** @description Soma dos não cancelados no filtro */
+            amount: string;
+        };
+        SettleNowDto: {
+            /** Format: uuid */
+            accountId: string;
+            /**
+             * Format: date
+             * @description Data efetiva (padrão: hoje; não pode ser futura)
+             * @example 2026-10-15
+             */
+            settledAt?: string;
+            method: components["schemas"]["PaymentMethod"];
+            /** @description Chave gerada pelo cliente por tentativa */
+            idempotencyKey: string;
+        };
+        CreateMaintenanceDto: {
+            /** Format: uuid */
+            vehicleId: string;
+            type: components["schemas"]["MaintenanceType"];
+            /** @example Troca de óleo e filtros */
+            description: string;
+            /**
+             * Format: date
+             * @example 2026-10-15
+             */
+            date: string;
+            /**
+             * @description Valor do serviço (gera a conta a pagar)
+             * @example 850.00
+             */
+            amount: string;
+            /**
+             * Format: date
+             * @description Vencimento da conta (padrão: a data do serviço)
+             * @example 2026-10-15
+             */
+            dueDate?: string;
+            /**
+             * Format: uuid
+             * @description Categoria de despesa (padrão: Manutenção; Pneus para o tipo TIRES)
+             */
+            categoryId?: string;
+            odometerKm?: number | null;
+            /** @example Oficina do João */
+            supplierName?: string | null;
+            notes?: string | null;
+            /** @description Informe para lançar já pago */
+            settleNow?: components["schemas"]["SettleNowDto"];
+        };
+        CancelCostDto: {
+            /** @example Lançado em duplicidade */
+            reason: string;
+        };
+        /** @enum {string} */
+        FuelType: "DIESEL" | "DIESEL_S10" | "GASOLINE" | "ETHANOL" | "CNG" | "OTHER";
+        FuelingDto: {
+            /** Format: uuid */
+            id: string;
+            vehicle: components["schemas"]["VehicleRefDto"];
+            driver: components["schemas"]["RefDto"] | null;
+            fuelType: components["schemas"]["FuelType"];
+            /** Format: date */
+            date: string;
+            liters: string;
+            pricePerLiter: string;
+            amount: string;
+            odometerKm: number | null;
+            station: string | null;
+            payable: components["schemas"]["CostPayableRefDto"];
+        };
+        FuelingListDto: {
+            items: components["schemas"]["FuelingDto"][];
+            total: number;
+            page: number;
+            pageSize: number;
+            liters: string;
+            amount: string;
+        };
+        CreateFuelingDto: {
+            /** @default DIESEL */
+            fuelType: components["schemas"]["FuelType"];
+            /**
+             * @description Litros (até 3 casas)
+             * @example 45.320
+             */
+            liters: string;
+            /**
+             * @description Preço por litro (até 4 casas)
+             * @example 6.099
+             */
+            pricePerLiter: string;
+            odometerKm?: number | null;
+            /** @example Posto Central */
+            station?: string | null;
+            /** Format: uuid */
+            vehicleId: string;
+            /**
+             * Format: date
+             * @example 2026-10-15
+             */
+            date: string;
+            /**
+             * @description Total da nota, quando difere de litros × preço por arredondamento da bomba
+             * @example 276.41
+             */
+            amount?: string;
+            /**
+             * Format: date
+             * @description Vencimento da conta (padrão: a data do abastecimento)
+             * @example 2026-10-15
+             */
+            dueDate?: string;
+            /** Format: uuid */
+            driverId?: string | null;
+            notes?: string | null;
+            /** @description Informe para lançar já pago */
+            settleNow?: components["schemas"]["SettleNowDto"];
+        };
+        VehicleCostRowDto: {
+            vehicle: components["schemas"]["VehicleRefDto"];
+            /** @description km rodados (registro diário) */
+            km: string;
+            /** @description Valor do km rodado (km × R$/km) */
+            kmRevenue: string;
+            liters: string;
+            fuelCost: string;
+            maintenanceCost: string;
+            /** @description km por litro no mês */
+            kmPerLiter: string | null;
+            /** @description Custo (combustível + manutenção) por km, 4 casas */
+            costPerKm: string | null;
+        };
+        CostSummaryDto: {
+            /** @example 2026-10 */
+            month: string;
+            vehicles: components["schemas"]["VehicleCostRowDto"][];
+        };
+        ExpenseCategoryListDto: {
+            items: components["schemas"]["CategoryRefDto"][];
+        };
+        /** @enum {string} */
+        EntryKind: "SINGLE" | "RECURRING" | "INSTALLMENT";
+        DriverExpenseDto: {
+            /** Format: uuid */
+            id: string;
+            description: string;
+            category: components["schemas"]["CategoryRefDto"];
+            amount: string;
+            paidAmount: string;
+            /** @description Saldo em aberto = valor − pago */
+            openAmount: string;
+            /** @example 2026-10 */
+            competence: string;
+            /** Format: date */
+            dueDate: string;
+            status: components["schemas"]["PayableStatus"];
+            /** @description Derivado: em aberto e vencimento antes de hoje */
+            overdue: boolean;
+            kind: components["schemas"]["EntryKind"];
+            installmentNumber: number | null;
+            installmentCount: number | null;
+            /** Format: uuid */
+            installmentGroupId: string | null;
+            /** Format: uuid */
+            recurrenceRuleId: string | null;
+            vehicle: components["schemas"]["VehicleRefDto"] | null;
+            supplierName: string | null;
+            notes: string | null;
+            approvalStatus: components["schemas"]["ApprovalStatus"];
+            /** Format: date-time */
+            canceledAt: string | null;
+            cancelReason: string | null;
+            attachmentsCount: number;
+            /** @description Quantos veículos dividem o valor (0 = sem rateio) */
+            splitVehicles: number;
+            /** Format: date-time */
+            createdAt: string;
+            driver: components["schemas"]["RefDto"] | null;
+            fuel: components["schemas"]["FuelingDto"] | null;
+        };
+        DriverExpenseListDto: {
+            items: components["schemas"]["DriverExpenseDto"][];
+            total: number;
+            page: number;
+            pageSize: number;
+        };
+        FuelInputDto: {
+            /** @default DIESEL */
+            fuelType: components["schemas"]["FuelType"];
+            /**
+             * @description Litros (até 3 casas)
+             * @example 45.320
+             */
+            liters: string;
+            /**
+             * @description Preço por litro (até 4 casas)
+             * @example 6.099
+             */
+            pricePerLiter: string;
+            odometerKm?: number | null;
+            /** @example Posto Central */
+            station?: string | null;
+        };
+        CreateDriverExpenseDto: {
+            /**
+             * Format: date
+             * @example 2026-10-15
+             */
+            date: string;
+            /**
+             * Format: uuid
+             * @description Categoria de despesa
+             */
+            categoryId: string;
+            /** @example 120.00 */
+            amount: string;
+            /** @example Borracharia na rota */
+            description: string;
+            /**
+             * Format: uuid
+             * @description Veículo em que o motorista está escalado na data
+             */
+            vehicleId?: string | null;
+            supplierName?: string | null;
+            notes?: string | null;
+            /** @description Detalhe de abastecimento (exige veículo) */
+            fuel?: components["schemas"]["FuelInputDto"];
+        };
+        RejectExpenseDto: {
+            /** @example Sem comprovante legível */
+            reason: string;
+        };
+        /** @enum {string} */
+        PayableStatusFilter: "PENDING" | "PARTIALLY_PAID" | "PAID" | "CANCELED" | "OPEN" | "OVERDUE";
+        /** @enum {string} */
+        ApprovalFilter: "APPROVED" | "PENDING_APPROVAL" | "REJECTED" | "ALL";
         PayableDto: {
             /** Format: uuid */
             id: string;
@@ -1674,6 +2698,8 @@ export interface components {
             canceledAt: string | null;
             cancelReason: string | null;
             attachmentsCount: number;
+            /** @description Quantos veículos dividem o valor (0 = sem rateio) */
+            splitVehicles: number;
             /** Format: date-time */
             createdAt: string;
         };
@@ -1712,6 +2738,11 @@ export interface components {
         AllocationDto: {
             vehicle: components["schemas"]["VehicleRefDto"] | null;
             method: components["schemas"]["AllocationMethod"];
+            /**
+             * @description Participação do veículo no valor
+             * @example 50.000000
+             */
+            percent: string;
             amount: string;
         };
         PayableDetailDto: {
@@ -1745,11 +2776,32 @@ export interface components {
             canceledAt: string | null;
             cancelReason: string | null;
             attachmentsCount: number;
+            /** @description Quantos veículos dividem o valor (0 = sem rateio) */
+            splitVehicles: number;
             /** Format: date-time */
             createdAt: string;
             settlements: components["schemas"]["SettlementDto"][];
             attachments: components["schemas"]["AttachmentDto"][];
             allocations: components["schemas"]["AllocationDto"][];
+        };
+        /**
+         * @description Rateio entre veículos: EQUAL (partes iguais), PERCENT ou FIXED (valores)
+         * @enum {string}
+         */
+        SplitMethod: "EQUAL" | "PERCENT" | "FIXED";
+        AllocationInputDto: {
+            /** Format: uuid */
+            vehicleId: string;
+            /**
+             * @description Obrigatório no rateio PERCENT (soma 100)
+             * @example 33.3333
+             */
+            percent?: string;
+            /**
+             * @description Obrigatório no rateio FIXED (soma = valor total)
+             * @example 1500.00
+             */
+            amount?: string;
         };
         RecurrenceInputDto: {
             frequency: components["schemas"]["RecurrenceFrequency"];
@@ -1761,20 +2813,11 @@ export interface components {
             /** @description Número máximo de ocorrências */
             maxOccurrences?: number;
         };
-        SettleNowDto: {
-            /** Format: uuid */
-            accountId: string;
-            /**
-             * Format: date
-             * @description Data efetiva (padrão: hoje; não pode ser futura)
-             * @example 2026-10-15
-             */
-            settledAt?: string;
-            method: components["schemas"]["PaymentMethod"];
-            /** @description Chave gerada pelo cliente por tentativa */
-            idempotencyKey: string;
-        };
         CreatePayableDto: {
+            /** @description Rateio entre veículos: EQUAL (partes iguais), PERCENT ou FIXED (valores) */
+            allocationMethod?: components["schemas"]["SplitMethod"];
+            /** @description Veículos do rateio (2 a 50). Substitui vehicleId. Envie [] na edição para desfazer o rateio. */
+            allocations?: components["schemas"]["AllocationInputDto"][];
             /** @example Seguro da Van 01 */
             description: string;
             /**
@@ -1822,6 +2865,10 @@ export interface components {
             recurrenceRuleId: string | null;
         };
         UpdatePayableDto: {
+            /** @description Rateio entre veículos: EQUAL (partes iguais), PERCENT ou FIXED (valores) */
+            allocationMethod?: components["schemas"]["SplitMethod"];
+            /** @description Veículos do rateio (2 a 50). Substitui vehicleId. Envie [] na edição para desfazer o rateio. */
+            allocations?: components["schemas"]["AllocationInputDto"][];
             description?: string;
             /** Format: uuid */
             categoryId?: string;
@@ -1880,6 +2927,210 @@ export interface components {
             payable: components["schemas"]["PayableDto"];
         };
         /** @enum {string} */
+        ContractorKind: "SCHOOL" | "CITY_HALL" | "PRIVATE_COMPANY" | "INDIVIDUAL" | "OTHER";
+        ContractorDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            kind: components["schemas"]["ContractorKind"];
+            document: string | null;
+            email: string | null;
+            phone: string | null;
+            status: components["schemas"]["RecordStatus"];
+            /** @description Contratos ativos */
+            activeContracts: number;
+        };
+        CreateContractorDto: {
+            /** @example Prefeitura de Campinas */
+            name: string;
+            kind?: components["schemas"]["ContractorKind"];
+            /** @description CPF ou CNPJ (opcional) */
+            document?: string | null;
+            email?: string | null;
+            phone?: string | null;
+            status?: components["schemas"]["RecordStatus"];
+        };
+        UpdateContractorDto: {
+            /** @example Prefeitura de Campinas */
+            name?: string;
+            kind?: components["schemas"]["ContractorKind"];
+            /** @description CPF ou CNPJ (opcional) */
+            document?: string | null;
+            email?: string | null;
+            phone?: string | null;
+            status?: components["schemas"]["RecordStatus"];
+        };
+        /** @enum {string} */
+        ContractStatus: "DRAFT" | "ACTIVE" | "SUSPENDED" | "ENDED" | "CANCELED";
+        /** @enum {string} */
+        ContractBillingType: "MONTHLY" | "FIXED_PERIOD" | "VARIABLE";
+        ContractVehicleDto: {
+            vehicle: components["schemas"]["VehicleRefDto"];
+            sharePercent: string | null;
+        };
+        ContractDto: {
+            /** Format: uuid */
+            id: string;
+            contractor: components["schemas"]["RefDto"];
+            number: string | null;
+            description: string | null;
+            billingType: components["schemas"]["ContractBillingType"];
+            amount: string;
+            /** Format: date */
+            startDate: string;
+            /** Format: date */
+            endDate: string | null;
+            dueDay: number | null;
+            dueMonthOffset: number;
+            revenueCategory: components["schemas"]["RefDto"] | null;
+            status: components["schemas"]["ContractStatus"];
+            vehicles: components["schemas"]["ContractVehicleDto"][];
+            routes: components["schemas"]["RefDto"][];
+        };
+        ContractReceivableDto: {
+            /** Format: uuid */
+            id: string;
+            competence: string;
+            /** Format: date */
+            dueDate: string;
+            amount: string;
+            receivedAmount: string;
+            status: string;
+        };
+        ContractDetailDto: {
+            /** Format: uuid */
+            id: string;
+            contractor: components["schemas"]["RefDto"];
+            number: string | null;
+            description: string | null;
+            billingType: components["schemas"]["ContractBillingType"];
+            amount: string;
+            /** Format: date */
+            startDate: string;
+            /** Format: date */
+            endDate: string | null;
+            dueDay: number | null;
+            dueMonthOffset: number;
+            revenueCategory: components["schemas"]["RefDto"] | null;
+            status: components["schemas"]["ContractStatus"];
+            vehicles: components["schemas"]["ContractVehicleDto"][];
+            routes: components["schemas"]["RefDto"][];
+            /** @description Contas a receber geradas (mais recentes primeiro) */
+            receivables: components["schemas"]["ContractReceivableDto"][];
+        };
+        ContractVehicleInputDto: {
+            /** Format: uuid */
+            vehicleId: string;
+            /**
+             * @description Participação do veículo na receita (soma 100). Vazio em todos = partes iguais.
+             * @example 50
+             */
+            sharePercent?: string | null;
+        };
+        CreateContractDto: {
+            /** Format: uuid */
+            contractorId: string;
+            /** @example 012/2026 */
+            number?: string | null;
+            description?: string | null;
+            /**
+             * @description MONTHLY e FIXED_PERIOD geram uma conta a receber por mês; VARIABLE é faturado por km ou manualmente
+             * @default MONTHLY
+             */
+            billingType: components["schemas"]["ContractBillingType"];
+            /**
+             * @description Valor mensal (em VARIABLE, valor de referência)
+             * @example 1500.00
+             */
+            amount: string;
+            /**
+             * Format: date
+             * @example 2026-02-01
+             */
+            startDate: string;
+            /**
+             * Format: date
+             * @description Fim (obrigatório em FIXED_PERIOD)
+             * @example 2026-10-15
+             */
+            endDate?: string;
+            /**
+             * @description Dia do vencimento
+             * @default 10
+             */
+            dueDay: number;
+            /**
+             * @description Meses depois da competência para vencer (out → vence em nov = 1)
+             * @default 1
+             */
+            dueMonthOffset: number;
+            /**
+             * Format: uuid
+             * @description Categoria de receita (padrão: Contratos)
+             */
+            revenueCategoryId?: string | null;
+            vehicles?: components["schemas"]["ContractVehicleInputDto"][];
+            routeIds?: string[];
+        };
+        UpdateContractDto: {
+            /** Format: uuid */
+            contractorId?: string;
+            /** @example 012/2026 */
+            number?: string | null;
+            description?: string | null;
+            /**
+             * @description MONTHLY e FIXED_PERIOD geram uma conta a receber por mês; VARIABLE é faturado por km ou manualmente
+             * @default MONTHLY
+             */
+            billingType: components["schemas"]["ContractBillingType"];
+            /**
+             * @description Valor mensal (em VARIABLE, valor de referência)
+             * @example 1500.00
+             */
+            amount?: string;
+            /**
+             * Format: date
+             * @example 2026-02-01
+             */
+            startDate?: string;
+            /**
+             * Format: date
+             * @description Fim (obrigatório em FIXED_PERIOD)
+             * @example 2026-10-15
+             */
+            endDate?: string;
+            /**
+             * @description Dia do vencimento
+             * @default 10
+             */
+            dueDay: number;
+            /**
+             * @description Meses depois da competência para vencer (out → vence em nov = 1)
+             * @default 1
+             */
+            dueMonthOffset: number;
+            /**
+             * Format: uuid
+             * @description Categoria de receita (padrão: Contratos)
+             */
+            revenueCategoryId?: string | null;
+            vehicles?: components["schemas"]["ContractVehicleInputDto"][];
+            routeIds?: string[];
+        };
+        /** @enum {string} */
+        ContractStatusChange: "ACTIVE" | "SUSPENDED" | "ENDED" | "CANCELED";
+        ContractStatusDto: {
+            status: components["schemas"]["ContractStatusChange"];
+            /**
+             * Format: date
+             * @description Último dia, ao encerrar (padrão: hoje)
+             * @example 2026-10-15
+             */
+            endDate?: string;
+            /** @description Motivo (cancelamento das contas futuras em aberto) */
+            reason?: string;
+        };
+        /** @enum {string} */
         ReceivableStatusFilter: "PENDING" | "PARTIALLY_RECEIVED" | "RECEIVED" | "CANCELED" | "OPEN" | "OVERDUE";
         /** @enum {string} */
         ReceivableStatus: "PENDING" | "PARTIALLY_RECEIVED" | "RECEIVED" | "CANCELED";
@@ -1912,6 +3163,8 @@ export interface components {
             canceledAt: string | null;
             cancelReason: string | null;
             attachmentsCount: number;
+            /** @description Quantos veículos dividem o valor (0 = sem rateio) */
+            splitVehicles: number;
             /** Format: date-time */
             createdAt: string;
         };
@@ -1952,6 +3205,8 @@ export interface components {
             canceledAt: string | null;
             cancelReason: string | null;
             attachmentsCount: number;
+            /** @description Quantos veículos dividem o valor (0 = sem rateio) */
+            splitVehicles: number;
             /** Format: date-time */
             createdAt: string;
             settlements: components["schemas"]["SettlementDto"][];
@@ -1959,6 +3214,10 @@ export interface components {
             allocations: components["schemas"]["AllocationDto"][];
         };
         CreateReceivableDto: {
+            /** @description Rateio entre veículos: EQUAL (partes iguais), PERCENT ou FIXED (valores) */
+            allocationMethod?: components["schemas"]["SplitMethod"];
+            /** @description Veículos do rateio (2 a 50). Substitui vehicleId. Envie [] na edição para desfazer o rateio. */
+            allocations?: components["schemas"]["AllocationInputDto"][];
             /** @example Contrato Escola Municipal — outubro */
             description: string;
             /**
@@ -2004,6 +3263,10 @@ export interface components {
             recurrenceRuleId: string | null;
         };
         UpdateReceivableDto: {
+            /** @description Rateio entre veículos: EQUAL (partes iguais), PERCENT ou FIXED (valores) */
+            allocationMethod?: components["schemas"]["SplitMethod"];
+            /** @description Veículos do rateio (2 a 50). Substitui vehicleId. Envie [] na edição para desfazer o rateio. */
+            allocations?: components["schemas"]["AllocationInputDto"][];
             description?: string;
             /** Format: uuid */
             categoryId?: string;
@@ -3563,6 +4826,1054 @@ export interface operations {
             };
         };
     };
+    Drivers_list: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["RecordStatus"];
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DriverDto"][];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Drivers_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDriverDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DriverDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Drivers_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Drivers_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDriverDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DriverDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Routes_list: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["RecordStatus"];
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RouteDto"][];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Routes_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRouteDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RouteDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Routes_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Routes_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateRouteDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RouteDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Assignments_list: {
+        parameters: {
+            query?: {
+                routeId?: string;
+                vehicleId?: string;
+                driverId?: string;
+                /** @description Só as vigentes hoje */
+                current?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentDto"][];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Assignments_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAssignmentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Assignments_mine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyAssignmentsDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Assignments_end: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EndAssignmentDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Mileage_list: {
+        parameters: {
+            query?: {
+                /** @description Início (padrão: 1º dia do mês atual) */
+                from?: string;
+                /** @description Fim (padrão: hoje) */
+                to?: string;
+                vehicleId?: string;
+                /** @description true = só faturados; false = só a faturar */
+                billed?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyLogListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Mileage_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDailyLogDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyLogDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Mileage_preview: {
+        parameters: {
+            query: {
+                /** @description Mês dos km rodados (AAAA-MM) */
+                month: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BillingPreviewDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Mileage_bill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBillingDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BillingResultDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Mileage_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Mileage_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDailyLogDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyLogDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_listMaintenances: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                vehicleId?: string;
+                /** @description Mês do serviço */
+                month?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_createMaintenance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateMaintenanceDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_getMaintenance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_cancelMaintenance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelCostDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_listFuelings: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                vehicleId?: string;
+                /** @description Mês do abastecimento */
+                month?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FuelingListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_createFueling: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFuelingDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FuelingDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_cancelFueling: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelCostDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FuelingDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_summary: {
+        parameters: {
+            query: {
+                month: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostSummaryDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_myCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExpenseCategoryListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_listMine: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DriverExpenseListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_createMine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDriverExpenseDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DriverExpenseDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_withdrawMine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DriverExpenseDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_listApprovals: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: components["schemas"]["ApprovalStatus"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DriverExpenseListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DriverExpenseDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    FleetCosts_reject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RejectExpenseDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DriverExpenseDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
     Payables_list: {
         parameters: {
             query?: {
@@ -3582,6 +5893,8 @@ export interface operations {
                 search?: string;
                 /** @description OPEN = pendente ou parcial; OVERDUE = em aberto e vencida */
                 status?: components["schemas"]["PayableStatusFilter"];
+                /** @description Despesas enviadas por motoristas entram como PENDING_APPROVAL */
+                approval?: components["schemas"]["ApprovalFilter"];
             };
             header?: never;
             path?: never;
@@ -3759,6 +6072,289 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PayableSettlementResultDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Contractors_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContractorDto"][];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Contractors_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateContractorDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContractorDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Contractors_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Contractors_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateContractorDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContractorDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Contracts_list: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["ContractStatus"];
+                contractorId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContractDto"][];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Contracts_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateContractDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContractDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Contracts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContractDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Contracts_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateContractDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContractDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Contracts_status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContractStatusDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContractDto"];
                 };
             };
             /** @description Erro (formato padrão) */

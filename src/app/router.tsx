@@ -15,6 +15,12 @@ import { SubscriptionPage } from '@/features/subscriptions/subscription-page';
 import { TeamPage } from '@/features/team/team-page';
 import { VehicleDetailPage } from '@/features/vehicles/vehicle-detail-page';
 import { VehiclesPage } from '@/features/vehicles/vehicles-page';
+import { ContractsPage } from '@/features/contracts/contracts-page';
+import { CostsPage } from '@/features/costs/costs-page';
+import { ApprovalsPage } from '@/features/driver/approvals-page';
+import { MyDayPage } from '@/features/driver/my-day-page';
+import { OperationsPage } from '@/features/fleet/operations-page';
+import { KmPage } from '@/features/mileage/km-page';
 import { NotFoundPage } from './error-pages';
 import { GuestOnly, RequireAuth, RequireCompany, RequirePermission } from './guards';
 
@@ -72,6 +78,54 @@ export const router = createBrowserRouter([
                 element: (
                   <RequirePermission permission="fleet:read">
                     <VehicleDetailPage />
+                  </RequirePermission>
+                ),
+              },
+              {
+                path: 'km',
+                element: (
+                  <RequirePermission permission="fleet:read">
+                    <KmPage />
+                  </RequirePermission>
+                ),
+              },
+              {
+                path: 'my',
+                element: (
+                  <RequirePermission permission="assignments:own">
+                    <MyDayPage />
+                  </RequirePermission>
+                ),
+              },
+              {
+                path: 'approvals',
+                element: (
+                  <RequirePermission permission="expenses:approve">
+                    <ApprovalsPage />
+                  </RequirePermission>
+                ),
+              },
+              {
+                path: 'operations',
+                element: (
+                  <RequirePermission permission="fleet:read">
+                    <OperationsPage />
+                  </RequirePermission>
+                ),
+              },
+              {
+                path: 'contracts',
+                element: (
+                  <RequirePermission permission="finance:read">
+                    <ContractsPage />
+                  </RequirePermission>
+                ),
+              },
+              {
+                path: 'costs',
+                element: (
+                  <RequirePermission permission="finance:read">
+                    <CostsPage />
                   </RequirePermission>
                 ),
               },

@@ -21,7 +21,7 @@ function readCollapsed(): boolean {
 export function AppLayout() {
   const { can } = useAuth();
   const [collapsed, setCollapsed] = useState(readCollapsed);
-  const items = NAV_ITEMS.filter((i) => can(i.permission));
+  const items = NAV_ITEMS.filter((i) => can(i.permission) && !(i.hiddenWith && can(i.hiddenWith)));
   const { pathname } = useLocation();
   const navigate = useNavigate();
   // Celular: até MOBILE_SLOTS itens na barra; se passar, os últimos vão para "Mais".
