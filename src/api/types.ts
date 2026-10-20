@@ -113,3 +113,27 @@ export type ClosingList = S['ClosingListDto'];
 export type Closing = S['ClosingDto'];
 export type ClosingDetail = S['ClosingDetailDto'];
 export type ClosingSnapshot = S['ClosingSnapshotDto'];
+
+// Fase 5 — plataforma (SUPER_ADMIN), planos e assinatura
+export type PublicPlan = S['PublicPlanDto'];
+export type PublicPlanList = S['PublicPlanListDto'];
+export type PlatformOverview = S['PlatformOverviewDto'];
+export type PlatformCompany = S['PlatformCompanyDto'];
+export type PlatformCompanyList = S['PlatformCompanyListDto'];
+export type PlatformCompanyDetail = S['PlatformCompanyDetailDto'];
+export type PlatformAuditEntry = S['PlatformAuditEntryDto'];
+export type PlatformUsage = S['PlatformUsageDto'];
+export type SetCompanyStatusRequest = S['SetCompanyStatusDto'];
+export type PlatformPlan = S['PlatformPlanDto'];
+export type PlatformPlanList = S['PlatformPlanListDto'];
+export type PlatformPlanFeature = S['PlatformPlanFeatureDto'];
+export type CreatePlanRequest = S['CreatePlanDto'];
+export type UpdatePlanRequest = S['UpdatePlanDto'];
+export type PlanFeatureKey = S['PlanFeatureKey'];
+export type PlatformSubscription = S['PlatformSubscriptionDto'];
+export type PlatformSubscriptionList = S['PlatformSubscriptionListDto'];
+export type UpdateSubscriptionRequest = S['UpdateSubscriptionDto'];
+export type PlatformSettings = S['PlatformSettingsDto'];
+export type UpdatePlatformSettingsRequest = S['UpdatePlatformSettingsDto'];
+export type CompanyStatus = S['CompanyStatus'];
+export type BillingInterval = S['BillingInterval'];

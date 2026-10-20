@@ -22,7 +22,9 @@ export function RequireCompany() {
   const { me } = useAuth();
   if (!me) return <FullPageLoader />;
   if (!me.activeCompany) {
-    return me.companies.length > 0 ? <SelectCompanyPage /> : <Navigate to="/onboarding" replace />;
+    if (me.companies.length > 0) return <SelectCompanyPage />;
+    // Administrador da plataforma sem empresa própria vai direto para o painel.
+    return <Navigate to={me.user.platformRole === 'SUPER_ADMIN' ? '/platform' : '/onboarding'} replace />;
   }
   return <Outlet />;
 }
@@ -48,4 +50,11 @@ export function GuestOnly() {
 export function safeNext(next: string | null): string | null {
   if (!next || !next.startsWith('/') || next.startsWith('//')) return null;
   return next;
+}
+
+/** Painel da plataforma: só SUPER_ADMIN (a API também confere em cada chamada). */
+export function RequirePlatformAdmin() {
+  const { me } = useAuth();
+  if (!me) return <FullPageLoader />;
+  return me.user.platformRole === 'SUPER_ADMIN' ? <Outlet /> : <ForbiddenPage />;
 }

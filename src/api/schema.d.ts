@@ -201,6 +201,173 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Planos ativos e públicos, para comparação e upgrade */
+        get: operations["Plans_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Indicadores comerciais da plataforma */
+        get: operations["Platform_overview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/companies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Empresas (dados cadastrais, assinatura e uso; sem dados financeiros) */
+        get: operations["Platform_companies"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/companies/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Platform_company"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/companies/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ativa, suspende ou cancela a empresa (com justificativa auditada) */
+        post: operations["Platform_setCompanyStatus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Platform_plans"];
+        put?: never;
+        /** Cria um plano */
+        post: operations["Platform_createPlan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/plans/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Altera preço, limites, recursos ou arquiva o plano */
+        patch: operations["Platform_updatePlan"];
+        trace?: never;
+    };
+    "/api/v1/platform/subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Platform_subscriptions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/subscriptions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Ativação administrativa: plano, status, datas e limites negociados (com justificativa) */
+        patch: operations["Platform_updateSubscription"];
+        trace?: never;
+    };
+    "/api/v1/platform/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Platform_settings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["Platform_updateSettings"];
+        trace?: never;
+    };
     "/api/v1/companies": {
         parameters: {
             query?: never;
@@ -1568,6 +1735,11 @@ export interface components {
             users: number;
             vehicles: number;
         };
+        SubscriptionBillingDto: {
+            /** @description Há gateway de pagamento integrado; sem ele, a mudança de plano é feita pela plataforma */
+            configured: boolean;
+            provider: string | null;
+        };
         SubscriptionDto: {
             status: components["schemas"]["SubscriptionStatus"];
             /** Format: date-time */
@@ -1579,6 +1751,312 @@ export interface components {
             plan: components["schemas"]["PlanSummaryDto"];
             limits: components["schemas"]["PlanLimitsDto"];
             usage: components["schemas"]["PlanUsageDto"];
+            /** @description Contato da plataforma para mudar de plano */
+            supportEmail: string | null;
+            billing: components["schemas"]["SubscriptionBillingDto"];
+        };
+        PublicPlanFeatureDto: {
+            key: string;
+            label: string;
+        };
+        PublicPlanDto: {
+            code: string;
+            name: string;
+            description: string | null;
+            /** @example 149.90 */
+            price: string;
+            currency: string;
+            interval: components["schemas"]["BillingInterval"];
+            /** @description null = ilimitado */
+            maxVehicles: number | null;
+            /** @description null = ilimitado */
+            maxUsers: number | null;
+            features: components["schemas"]["PublicPlanFeatureDto"][];
+        };
+        PublicPlanListDto: {
+            items: components["schemas"]["PublicPlanDto"][];
+        };
+        StatusCountDto: {
+            status: string;
+            count: number;
+        };
+        PlanCountDto: {
+            planId: string;
+            name: string;
+            count: number;
+        };
+        BillingStatusDto: {
+            /** @description Há gateway de pagamento integrado e ativo */
+            configured: boolean;
+            provider: string | null;
+        };
+        PlatformOverviewDto: {
+            companies: number;
+            companiesByStatus: components["schemas"]["StatusCountDto"][];
+            subscriptionsByStatus: components["schemas"]["StatusCountDto"][];
+            /** @description Assinaturas não canceladas por plano */
+            subscriptionsByPlan: components["schemas"]["PlanCountDto"][];
+            /**
+             * @description Receita recorrente mensal contratada (assinaturas ativas; anuais divididas por 12)
+             * @example 1500.00
+             */
+            mrr: string;
+            /** @description Empresas criadas nos últimos 30 dias */
+            newCompanies30d: number;
+            /** @description Testes que terminam nos próximos 7 dias */
+            trialsEnding7d: number;
+            /** @description Assinaturas com pagamento em atraso */
+            pastDue: number;
+            /** @description Veículos ativos em todas as empresas */
+            vehicles: number;
+            /** @description Membros ativos em todas as empresas */
+            members: number;
+            billing: components["schemas"]["BillingStatusDto"];
+        };
+        PlatformPlanRefDto: {
+            id: string;
+            code: string;
+            name: string;
+        };
+        PlatformSubscriptionSummaryDto: {
+            id: string;
+            status: components["schemas"]["SubscriptionStatus"];
+            plan: components["schemas"]["PlatformPlanRefDto"];
+            /** Format: date-time */
+            trialEndsAt: string | null;
+            /** Format: date-time */
+            currentPeriodEnd: string | null;
+        };
+        PlatformUsageDto: {
+            /** @description Membros ativos + convites pendentes */
+            users: number;
+            /** @description Veículos não arquivados */
+            vehicles: number;
+            maxUsers: number | null;
+            maxVehicles: number | null;
+        };
+        PlatformCompanyDto: {
+            id: string;
+            tradeName: string;
+            legalName: string | null;
+            document: string;
+            email: string | null;
+            phone: string | null;
+            city: string | null;
+            state: string | null;
+            status: components["schemas"]["CompanyStatus"];
+            /** Format: date-time */
+            createdAt: string;
+            subscription: components["schemas"]["PlatformSubscriptionSummaryDto"] | null;
+            usage: components["schemas"]["PlatformUsageDto"];
+        };
+        PlatformCompanyListDto: {
+            items: components["schemas"]["PlatformCompanyDto"][];
+            total: number;
+            page: number;
+            pageSize: number;
+        };
+        PlatformPersonDto: {
+            id: string;
+            name: string;
+            email: string;
+        };
+        PlatformAuditEntryDto: {
+            id: string;
+            action: string;
+            reason: string | null;
+            actor: components["schemas"]["PlatformPersonDto"] | null;
+            /** Format: date-time */
+            createdAt: string;
+            before: {
+                [key: string]: unknown;
+            } | null;
+            after: {
+                [key: string]: unknown;
+            } | null;
+        };
+        PlatformCompanyDetailDto: {
+            id: string;
+            tradeName: string;
+            legalName: string | null;
+            document: string;
+            email: string | null;
+            phone: string | null;
+            city: string | null;
+            state: string | null;
+            status: components["schemas"]["CompanyStatus"];
+            /** Format: date-time */
+            createdAt: string;
+            subscription: components["schemas"]["PlatformSubscriptionSummaryDto"] | null;
+            usage: components["schemas"]["PlatformUsageDto"];
+            /** @description Proprietários (OWNER) ativos */
+            owners: components["schemas"]["PlatformPersonDto"][];
+            /** @description Ações da plataforma e do gateway sobre esta empresa */
+            history: components["schemas"]["PlatformAuditEntryDto"][];
+        };
+        SetCompanyStatusDto: {
+            /** @example Pagamento não identificado após três avisos */
+            reason: string;
+            status: components["schemas"]["CompanyStatus"];
+        };
+        /** @enum {string} */
+        PlanStatus: "ACTIVE" | "ARCHIVED";
+        PlatformPlanFeatureDto: {
+            key: string;
+            label: string;
+            enabled: boolean;
+        };
+        PlatformPlanDto: {
+            id: string;
+            code: string;
+            name: string;
+            description: string | null;
+            /** @example 1500.00 */
+            price: string;
+            currency: string;
+            interval: components["schemas"]["BillingInterval"];
+            maxVehicles: number | null;
+            maxUsers: number | null;
+            status: components["schemas"]["PlanStatus"];
+            isPublic: boolean;
+            sortOrder: number;
+            features: components["schemas"]["PlatformPlanFeatureDto"][];
+            /** @description Assinaturas que usam o plano (exceto canceladas) */
+            subscriptions: number;
+            /** @description Plano padrão para novas empresas */
+            isDefault: boolean;
+        };
+        PlatformPlanListDto: {
+            items: components["schemas"]["PlatformPlanDto"][];
+            /** @description Catálogo de recursos disponíveis */
+            catalog: components["schemas"]["PlatformPlanFeatureDto"][];
+        };
+        /** @enum {string} */
+        PlanFeatureKey: "reports.basic" | "reports.export" | "allocations" | "support.priority";
+        PlanFeatureInputDto: {
+            key: components["schemas"]["PlanFeatureKey"];
+            enabled: boolean;
+        };
+        CreatePlanDto: {
+            /**
+             * @description Identificador único (minúsculas, números e hífen)
+             * @example frota-50
+             */
+            code: string;
+            /** @example Frota 50 */
+            name: string;
+            description?: string | null;
+            /**
+             * @description Preço por período
+             * @example 149.90
+             */
+            price: string;
+            interval: components["schemas"]["BillingInterval"];
+            /** @description Limite de veículos ativos; null = ilimitado */
+            maxVehicles?: number | null;
+            /** @description Limite de usuários (membros + convites); null = ilimitado */
+            maxUsers?: number | null;
+            /**
+             * @description Aparece na lista de planos para as empresas
+             * @default true
+             */
+            isPublic: boolean;
+            /** @default 0 */
+            sortOrder: number;
+            features?: components["schemas"]["PlanFeatureInputDto"][];
+        };
+        UpdatePlanDto: {
+            name?: string;
+            description?: string | null;
+            /**
+             * @description Preço por período
+             * @example 149.90
+             */
+            price?: string;
+            interval?: components["schemas"]["BillingInterval"];
+            /** @description Limite de veículos ativos; null = ilimitado */
+            maxVehicles?: number | null;
+            /** @description Limite de usuários; null = ilimitado */
+            maxUsers?: number | null;
+            isPublic?: boolean;
+            sortOrder?: number;
+            status?: components["schemas"]["PlanStatus"];
+            /** @description Substitui a lista de recursos */
+            features?: components["schemas"]["PlanFeatureInputDto"][];
+        };
+        PlatformCompanyRefDto: {
+            id: string;
+            tradeName: string;
+            status: components["schemas"]["CompanyStatus"];
+        };
+        PlatformSubscriptionDto: {
+            id: string;
+            company: components["schemas"]["PlatformCompanyRefDto"];
+            plan: components["schemas"]["PlatformPlanRefDto"];
+            status: components["schemas"]["SubscriptionStatus"];
+            /** Format: date-time */
+            trialEndsAt: string | null;
+            /** Format: date-time */
+            currentPeriodStart: string;
+            /** Format: date-time */
+            currentPeriodEnd: string | null;
+            /** Format: date-time */
+            canceledAt: string | null;
+            overrideMaxVehicles: number | null;
+            overrideMaxUsers: number | null;
+            /** @description Gateway que cobra esta assinatura, quando integrado */
+            externalProvider: string | null;
+            usage: components["schemas"]["PlatformUsageDto"];
+            /** @description Avisos, como uso acima dos limites após troca de plano */
+            warnings: string[];
+        };
+        PlatformSubscriptionListDto: {
+            items: components["schemas"]["PlatformSubscriptionDto"][];
+            total: number;
+            page: number;
+            pageSize: number;
+        };
+        UpdateSubscriptionDto: {
+            /** @example Pagamento não identificado após três avisos */
+            reason: string;
+            /** @description Troca de plano (só planos ativos) */
+            planId?: string;
+            status?: components["schemas"]["SubscriptionStatus"];
+            /**
+             * Format: date
+             * @description Fim do período de teste
+             * @example 2026-10-15
+             */
+            trialEndsAt?: string;
+            /**
+             * Format: date
+             * @description Fim do período pago atual
+             * @example 2026-10-15
+             */
+            currentPeriodEnd?: string;
+            /** @description Exceção negociada de veículos; null = vale o do plano */
+            overrideMaxVehicles?: number | null;
+            /** @description Exceção negociada de usuários; null = vale o do plano */
+            overrideMaxUsers?: number | null;
+        };
+        PlatformSettingsDto: {
+            allowNewCompanies: boolean;
+            defaultPlan: components["schemas"]["PlatformPlanRefDto"] | null;
+            trialDays: number;
+            supportEmail: string | null;
+            /** Format: date-time */
+            updatedAt: string | null;
+            billing: components["schemas"]["BillingStatusDto"];
+        };
+        UpdatePlatformSettingsDto: {
+            /** @description Permite que novos usuários criem empresas (onboarding) */
+            allowNewCompanies?: boolean;
+            /** @description Plano das novas empresas (precisa estar ativo) */
+            defaultPlanId?: string;
+            /** @description Dias de teste; 0 = começa ativa */
+            trialDays?: number;
+            /** @description Contato mostrado às empresas para mudar de plano */
+            supportEmail?: string | null;
         };
         CreateCompanyDto: {
             /** @example Transportes Silva */
@@ -3888,6 +4366,383 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SubscriptionDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Plans_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicPlanListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Platform_overview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformOverviewDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Platform_companies: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                /** @description Nome, razão social, documento ou e-mail */
+                search?: string;
+                status?: components["schemas"]["CompanyStatus"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformCompanyListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Platform_company: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformCompanyDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Platform_setCompanyStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetCompanyStatusDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformCompanyDetailDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Platform_plans: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformPlanListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Platform_createPlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePlanDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformPlanDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Platform_updatePlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePlanDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformPlanDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Platform_subscriptions: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: components["schemas"]["SubscriptionStatus"];
+                planId?: string;
+                /** @description Só testes que terminam nos próximos 7 dias ou já terminaram */
+                trialEnding?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformSubscriptionListDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Platform_updateSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSubscriptionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformSubscriptionDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Platform_settings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformSettingsDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Platform_updateSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePlatformSettingsDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformSettingsDto"];
                 };
             };
             /** @description Erro (formato padrão) */
