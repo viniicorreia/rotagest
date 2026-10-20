@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { PlatformSubscription } from '@/api/types';
-import { buildSubscriptionPatch, featuresPayload, hasSubscriptionChanges, parseOptionalInt, subscriptionFormDefaults, toDateInput } from './platform-forms';
+import {
+  buildSubscriptionPatch,
+  featuresPayload,
+  hasSubscriptionChanges,
+  parseOptionalInt,
+  subscriptionFormDefaults,
+  toDateInput,
+} from './platform-forms';
 
 const sub: PlatformSubscription = {
   id: 's1',
@@ -27,7 +34,10 @@ describe('platform forms', () => {
   });
 
   it('envia só a justificativa quando nada mudou', () => {
-    const patch = buildSubscriptionPatch(sub, { ...subscriptionFormDefaults(sub), reason: '  ajuste combinado  ' });
+    const patch = buildSubscriptionPatch(sub, {
+      ...subscriptionFormDefaults(sub),
+      reason: '  ajuste combinado  ',
+    });
     expect(patch).toEqual({ reason: 'ajuste combinado' });
     expect(hasSubscriptionChanges(patch)).toBe(false);
   });

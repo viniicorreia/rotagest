@@ -32,7 +32,7 @@ export function PlatformOverviewPage() {
               icon={Building2}
               value={data?.companies}
               loading={loading}
-              hint={data?.companiesByStatus.map((s) => `${s.count} ${companyStatusLabel(s.status).toLowerCase()}`).join(' · ') || undefined}
+              hint={data?.companiesByStatus.map((s) => `${s.count} ${companyStatusLabel(s.status).toLowerCase()}${s.count === 1 ? "" : "s"}`).join(' · ') || undefined}
             />
             <StatCard label="MRR contratado" icon={CircleDollarSign} value={formatBRL(data?.mrr)} loading={loading} hint="Assinaturas ativas" />
             <StatCard label="Novas em 30 dias" icon={Sparkles} value={data?.newCompanies30d} loading={loading} />

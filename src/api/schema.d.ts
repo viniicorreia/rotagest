@@ -2024,16 +2024,16 @@ export interface components {
             status?: components["schemas"]["SubscriptionStatus"];
             /**
              * Format: date
-             * @description Fim do período de teste
-             * @example 2026-10-15
+             * @description Fim do período de teste; null limpa
+             * @example 2026-11-15
              */
-            trialEndsAt?: string;
+            trialEndsAt?: string | null;
             /**
              * Format: date
-             * @description Fim do período pago atual
-             * @example 2026-10-15
+             * @description Fim do período pago atual; null limpa
+             * @example 2026-11-15
              */
-            currentPeriodEnd?: string;
+            currentPeriodEnd?: string | null;
             /** @description Exceção negociada de veículos; null = vale o do plano */
             overrideMaxVehicles?: number | null;
             /** @description Exceção negociada de usuários; null = vale o do plano */

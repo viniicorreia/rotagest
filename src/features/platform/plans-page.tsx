@@ -23,6 +23,7 @@ import { formatBRL, parseMoneyInput, toMoneyInput } from '@/lib/money';
 import { cn } from '@/lib/utils';
 import { INTERVAL_LABELS, PLAN_STATUS_LABELS, formatLimit } from './labels';
 import { featuresPayload, parseOptionalInt, toIntInput } from './platform-forms';
+import { ErrorState } from './platform-ui';
 import { useInvalidatePlatform, usePlatformPlans } from './use-platform';
 
 export function PlatformPlansPage() {
@@ -34,7 +35,9 @@ export function PlatformPlansPage() {
   async function toggleStatus(plan: PlatformPlan) {
     const archiving = plan.status === 'ACTIVE';
     try {
-      await http.patch<PlatformPlan>(`/platform/plans/${plan.id}`, { status: archiving ? 'ARCHIVED' : 'ACTIVE' } satisfies UpdatePlanRequest);
+      await http.patch<PlatformPlan>(`/platform/plans/${plan.id}`, {
+        status: archiving ? 'ARCHIVED' : 'ACTIVE',
+      } satisfies UpdatePlanRequest);
       toast.success(archiving ? 'Plano arquivado' : 'Plano reativado');
       await invalidate();
     } catch (e) {
@@ -59,8 +62,8 @@ export function PlatformPlansPage() {
       <div className="mb-4 flex gap-3 rounded-xl border bg-muted/40 p-3 text-sm text-muted-foreground">
         <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
         <p>
-          Os limites de veículos e usuários são aplicados em novos cadastros (novos veículos e novos convites). Ao reduzir um limite ou trocar
-          o plano, nada do que a empresa já tem é removido.
+          Os limites de veículos e usuários são aplicados em novos cadastros (novos veículos e novos convites). Ao reduzir um limite ou trocar o
+          plano, nada do que a empresa já tem é removido.
         </p>
       </div>
 
@@ -71,12 +74,7 @@ export function PlatformPlansPage() {
           ))}
         </div>
       ) : plans.isError ? (
-        <div className="rounded-xl border border-dashed p-6 text-center">
-          <p className="text-sm text-destructive">{errorMessage(plans.error)}</p>
-          <Button variant="outline" className="mt-3" onClick={() => plans.refetch()}>
-            Tentar novamente
-          </Button>
-        </div>
+        <ErrorState error={plans.error} onRetry={() => plans.refetch()} />
       ) : !plans.data.items.length ? (
         <EmptyState
           icon={Layers}
@@ -221,20 +219,36 @@ const schema = z
     maxVehicles: limitField,
     maxUsers: limitField,
     isPublic: z.boolean(),
-    sortOrder: z.string().regex(/^\d{1,4}$/, 'Use um número de 0 a 1000').refine((v) => Number(v) <= 1000, 'Use um número de 0 a 1000'),
+    sortOrder: z
+      .string()
+      .regex(/^\d{1,4}$/, 'Use um número de 0 a 1000')
+      .refine((v) => Number(v) <= 1000, 'Use um número de 0 a 1000'),
     features: z.array(z.string()),
     creating: z.boolean(),
   })
   .superRefine((v, ctx) => {
     if (v.creating) {
-      if (!v.code) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['code'], message: 'Informe o código' });
+      if (!v.code)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['code'],
+          message: 'Informe o código',
+        });
       else if (v.code.length > 40 || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(v.code))
-        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['code'], message: 'Use minúsculas, números e hífen (ex.: frota-50)' });
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['code'],
+          message: 'Use minúsculas, números e hífen (ex.: frota-50)',
+        });
     }
     for (const key of ['maxVehicles', 'maxUsers'] as const) {
       const f = v[key];
       if (!f.unlimited && !(/^\d{1,6}$/.test(f.value.trim()) && Number(f.value) >= 1 && Number(f.value) <= 100000))
-        ctx.addIssue({ code: z.ZodIssueCode.custom, path: [key, 'value'], message: 'Informe um número de 1 a 100.000 ou marque ilimitado' });
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [key, 'value'],
+          message: 'Informe um número de 1 a 100.000 ou marque ilimitado',
+        });
     }
   });
 type FormValues = z.infer<typeof schema>;
@@ -246,8 +260,14 @@ function defaults(plan: PlatformPlan | null): FormValues {
     description: plan?.description ?? '',
     price: plan ? toMoneyInput(plan.price) : '',
     interval: plan?.interval ?? 'MONTHLY',
-    maxVehicles: { unlimited: plan ? plan.maxVehicles === null : false, value: toIntInput(plan?.maxVehicles) },
-    maxUsers: { unlimited: plan ? plan.maxUsers === null : false, value: toIntInput(plan?.maxUsers) },
+    maxVehicles: {
+      unlimited: plan ? plan.maxVehicles === null : false,
+      value: toIntInput(plan?.maxVehicles),
+    },
+    maxUsers: {
+      unlimited: plan ? plan.maxUsers === null : false,
+      value: toIntInput(plan?.maxUsers),
+    },
     isPublic: plan?.isPublic ?? true,
     sortOrder: String(plan?.sortOrder ?? 0),
     features: plan?.features.filter((f) => f.enabled).map((f) => f.key) ?? [],
@@ -255,10 +275,21 @@ function defaults(plan: PlatformPlan | null): FormValues {
   };
 }
 
-function PlanFormDialog({ state, catalog, onClose }: { state: { plan: PlatformPlan | null } | null; catalog: PlatformPlanFeature[]; onClose: () => void }) {
+function PlanFormDialog({
+  state,
+  catalog,
+  onClose,
+}: {
+  state: { plan: PlatformPlan | null } | null;
+  catalog: PlatformPlanFeature[];
+  onClose: () => void;
+}) {
   const plan = state?.plan ?? null;
   const invalidate = useInvalidatePlatform();
-  const form = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: defaults(plan) });
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: defaults(plan),
+  });
   const { errors, isSubmitting } = form.formState;
 
   useEffect(() => {
@@ -285,7 +316,10 @@ function PlanFormDialog({ state, catalog, onClose }: { state: { plan: PlatformPl
         await http.patch<PlatformPlan>(`/platform/plans/${plan.id}`, body satisfies UpdatePlanRequest);
         toast.success('Plano atualizado');
       } else {
-        await http.post<PlatformPlan>('/platform/plans', { ...body, code: v.code } satisfies CreatePlanRequest);
+        await http.post<PlatformPlan>('/platform/plans', {
+          ...body,
+          code: v.code,
+        } satisfies CreatePlanRequest);
         toast.success('Plano criado');
       }
       await invalidate();
@@ -317,7 +351,15 @@ function PlanFormDialog({ state, catalog, onClose }: { state: { plan: PlatformPl
               </Field>
             ) : (
               <Field id="plan-code" label="Código" error={errors.code?.message} hint="Minúsculas, números e hífen">
-                <Input id="plan-code" placeholder="frota-50" autoCapitalize="none" autoCorrect="off" className="font-mono" {...form.register('code')} aria-invalid={!!errors.code} />
+                <Input
+                  id="plan-code"
+                  placeholder="frota-50"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  className="font-mono"
+                  {...form.register('code')}
+                  aria-invalid={!!errors.code}
+                />
               </Field>
             )}
           </div>
@@ -359,7 +401,15 @@ function PlanFormDialog({ state, catalog, onClose }: { state: { plan: PlatformPl
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field id="plan-order" label="Ordem de exibição" error={errors.sortOrder?.message} hint="Menor aparece primeiro">
-              <Input id="plan-order" type="number" inputMode="numeric" min={0} max={1000} {...form.register('sortOrder')} aria-invalid={!!errors.sortOrder} />
+              <Input
+                id="plan-order"
+                type="number"
+                inputMode="numeric"
+                min={0}
+                max={1000}
+                {...form.register('sortOrder')}
+                aria-invalid={!!errors.sortOrder}
+              />
             </Field>
             <label className="flex items-start gap-3 rounded-lg border p-3 text-sm sm:self-end">
               <input type="checkbox" className="mt-0.5 size-4 accent-[var(--primary)]" {...form.register('isPublic')} />

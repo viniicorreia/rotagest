@@ -6,7 +6,13 @@ export function useSubscription(enabled = true) {
   return useQuery({ queryKey: ['subscription'], queryFn: () => http.get<SubscriptionInfo>('/subscription'), enabled });
 }
 
-export const SUBSCRIPTION_STATUS: Record<SubscriptionInfo['status'], { label: string; variant: 'default' | 'secondary' | 'warning' | 'destructive' }> = {
+export const SUBSCRIPTION_STATUS: Record<
+  SubscriptionInfo['status'],
+  {
+    label: string;
+    variant: 'default' | 'secondary' | 'warning' | 'destructive';
+  }
+> = {
   TRIALING: { label: 'Em teste', variant: 'warning' },
   ACTIVE: { label: 'Ativa', variant: 'default' },
   PAST_DUE: { label: 'Pagamento pendente', variant: 'destructive' },
@@ -16,5 +22,9 @@ export const SUBSCRIPTION_STATUS: Record<SubscriptionInfo['status'], { label: st
 
 /** Planos públicos para comparação (GET /plans). */
 export function usePublicPlans(enabled = true) {
-  return useQuery({ queryKey: ['subscription', 'plans'], queryFn: () => http.get<PublicPlanList>('/plans'), enabled });
+  return useQuery({
+    queryKey: ['subscription', 'plans'],
+    queryFn: () => http.get<PublicPlanList>('/plans'),
+    enabled,
+  });
 }

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertTriangle, ChevronLeft, ChevronRight, Info, Pencil, Receipt } from 'lucide-react';
+import { AlertTriangle, Info, Pencil, Receipt } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
@@ -19,6 +19,7 @@ import { formatDateBR } from '@/lib/dates';
 import { cn } from '@/lib/utils';
 import { CompanyStatusBadge, SUBSCRIPTION_STATUS_LABELS, SubscriptionStatusBadge, formatUsage } from './labels';
 import { buildSubscriptionPatch, hasSubscriptionChanges, subscriptionFormDefaults, type SubscriptionFormValues } from './platform-forms';
+import { ErrorState, Pagination } from './platform-ui';
 import { useInvalidatePlatform, usePlatformPlans, usePlatformSubscriptions } from './use-platform';
 
 const PAGE_SIZE = 20;
@@ -32,7 +33,13 @@ export function PlatformSubscriptionsPage() {
   const trialEnding = params.get('trialEnding') === 'true';
   const page = Math.max(1, Number(params.get('page') ?? '1') || 1);
 
-  const list = usePlatformSubscriptions({ status, planId: planId || undefined, trialEnding, page, pageSize: PAGE_SIZE });
+  const list = usePlatformSubscriptions({
+    status,
+    planId: planId || undefined,
+    trialEnding,
+    page,
+    pageSize: PAGE_SIZE,
+  });
   const plans = usePlatformPlans();
   const [editing, setEditing] = useState<PlatformSubscription | null>(null);
 
@@ -45,7 +52,6 @@ export function PlatformSubscriptionsPage() {
   }
 
   const data = list.data;
-  const totalPages = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1;
   const filtered = !!(status || planId || trialEnding);
 
   return (
@@ -80,7 +86,12 @@ export function PlatformSubscriptionsPage() {
           ))}
         </NativeSelect>
         <label className="flex h-11 items-center gap-3 rounded-lg border px-3 text-sm md:h-10">
-          <input type="checkbox" className="size-4 accent-[var(--primary)]" checked={trialEnding} onChange={(e) => set('trialEnding', e.target.checked ? 'true' : '')} />
+          <input
+            type="checkbox"
+            className="size-4 accent-[var(--primary)]"
+            checked={trialEnding}
+            onChange={(e) => set('trialEnding', e.target.checked ? 'true' : '')}
+          />
           Teste terminando
         </label>
       </Card>
@@ -92,12 +103,7 @@ export function PlatformSubscriptionsPage() {
           ))}
         </div>
       ) : list.isError ? (
-        <div className="rounded-xl border border-dashed p-6 text-center">
-          <p className="text-sm text-destructive">{errorMessage(list.error)}</p>
-          <Button variant="outline" className="mt-3" onClick={() => list.refetch()}>
-            Tentar novamente
-          </Button>
-        </div>
+        <ErrorState error={list.error} onRetry={() => list.refetch()} />
       ) : !data?.items.length ? (
         <EmptyState
           icon={Receipt}
@@ -179,21 +185,7 @@ export function PlatformSubscriptionsPage() {
               ))}
             </tbody>
           </table>
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between border-t px-4 py-2 text-sm">
-              <span className="text-muted-foreground">
-                Página {page} de {totalPages} · {data.total} assinaturas
-              </span>
-              <div className="flex gap-1">
-                <Button size="icon" variant="ghost" disabled={page <= 1} aria-label="Página anterior" onClick={() => set('page', String(page - 1))}>
-                  <ChevronLeft />
-                </Button>
-                <Button size="icon" variant="ghost" disabled={page >= totalPages} aria-label="Próxima página" onClick={() => set('page', String(page + 1))}>
-                  <ChevronRight />
-                </Button>
-              </div>
-            </div>
-          )}
+          <Pagination page={page} pageSize={data.pageSize} total={data.total} noun="assinaturas" onPage={(n) => set('page', String(n))} />
         </Card>
       )}
 
@@ -259,7 +251,10 @@ const EMPTY: SubscriptionFormValues = {
 function EditSubscriptionDialog({ sub, onClose }: { sub: PlatformSubscription | null; onClose: () => void }) {
   const plans = usePlatformPlans();
   const invalidate = useInvalidatePlatform();
-  const form = useForm<SubscriptionFormValues>({ resolver: zodResolver(schema), defaultValues: sub ? subscriptionFormDefaults(sub) : EMPTY });
+  const form = useForm<SubscriptionFormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: sub ? subscriptionFormDefaults(sub) : EMPTY,
+  });
   const { errors, isSubmitting } = form.formState;
   const [warnings, setWarnings] = useState<string[]>([]);
 
@@ -289,7 +284,9 @@ function EditSubscriptionDialog({ sub, onClose }: { sub: PlatformSubscription | 
       const updated = await http.patch<PlatformSubscription>(`/platform/subscriptions/${sub.id}`, patch);
       await invalidate();
       if (updated.warnings.length) {
-        toast.warning('Assinatura atualizada com avisos', { description: updated.warnings.join(' ') });
+        toast.warning('Assinatura atualizada com avisos', {
+          description: updated.warnings.join(' '),
+        });
         setWarnings(updated.warnings);
       } else {
         toast.success('Assinatura atualizada');
@@ -318,12 +315,7 @@ function EditSubscriptionDialog({ sub, onClose }: { sub: PlatformSubscription | 
             </DialogFooter>
           </>
         ) : (
-          <form
-            onSubmit={form.handleSubmit(submit)}
-            onChange={() => errors.root && form.clearErrors('root')}
-            noValidate
-            className="space-y-4"
-          >
+          <form onSubmit={form.handleSubmit(submit)} onChange={() => errors.root && form.clearErrors('root')} noValidate className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <Field id="sub-plan" label="Plano" error={errors.planId?.message}>
                 <NativeSelect id="sub-plan" {...form.register('planId')} aria-invalid={!!errors.planId}>
@@ -350,14 +342,36 @@ function EditSubscriptionDialog({ sub, onClose }: { sub: PlatformSubscription | 
                 <Input id="sub-period" type="date" {...form.register('currentPeriodEnd')} />
               </Field>
               <Field id="sub-vehicles" label="Exceção de veículos" error={errors.overrideMaxVehicles?.message} hint="Vazio = vale o do plano">
-                <Input id="sub-vehicles" type="number" inputMode="numeric" min={1} max={100000} {...form.register('overrideMaxVehicles')} aria-invalid={!!errors.overrideMaxVehicles} />
+                <Input
+                  id="sub-vehicles"
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={100000}
+                  {...form.register('overrideMaxVehicles')}
+                  aria-invalid={!!errors.overrideMaxVehicles}
+                />
               </Field>
               <Field id="sub-users" label="Exceção de usuários" error={errors.overrideMaxUsers?.message} hint="Vazio = vale o do plano">
-                <Input id="sub-users" type="number" inputMode="numeric" min={1} max={100000} {...form.register('overrideMaxUsers')} aria-invalid={!!errors.overrideMaxUsers} />
+                <Input
+                  id="sub-users"
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={100000}
+                  {...form.register('overrideMaxUsers')}
+                  aria-invalid={!!errors.overrideMaxUsers}
+                />
               </Field>
             </div>
             <Field id="sub-reason" label="Justificativa" error={errors.reason?.message} hint="Fica registrada na auditoria (10 a 500 caracteres)">
-              <Input id="sub-reason" maxLength={500} placeholder="Ex.: Contrato anual assinado em 15/10" {...form.register('reason')} aria-invalid={!!errors.reason} />
+              <Input
+                id="sub-reason"
+                maxLength={500}
+                placeholder="Ex.: Contrato anual assinado em 15/10"
+                {...form.register('reason')}
+                aria-invalid={!!errors.reason}
+              />
             </Field>
             <p className="text-xs text-muted-foreground">Nenhuma cobrança é feita: a alteração só muda o que a empresa pode usar.</p>
             {errors.root && (
@@ -379,4 +393,3 @@ function EditSubscriptionDialog({ sub, onClose }: { sub: PlatformSubscription | 
     </Dialog>
   );
 }
-

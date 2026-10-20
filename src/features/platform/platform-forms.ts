@@ -24,7 +24,10 @@ export function toIntInput(value: number | null | undefined): string {
 /** Recursos do catálogo marcados no formulário, no formato que a API espera (lista completa). */
 export function featuresPayload(catalog: { key: string }[], enabled: string[]): { key: PlanFeatureKey; enabled: boolean }[] {
   const on = new Set(enabled);
-  return catalog.map((c) => ({ key: c.key as PlanFeatureKey, enabled: on.has(c.key) }));
+  return catalog.map((c) => ({
+    key: c.key as PlanFeatureKey,
+    enabled: on.has(c.key),
+  }));
 }
 
 export interface SubscriptionFormValues {
