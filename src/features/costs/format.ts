@@ -46,6 +46,14 @@ export function parseDecimalInput(input: string, intDigits: number, decimals: nu
   return dec ? `${String(Number(int))}.${dec}` : String(Number(int));
 }
 
+/** "6.0990" → "6,099" (para preencher campos ao duplicar um lançamento). */
+export function toDecimalInput(value: string | null | undefined): string {
+  if (!value) return '';
+  const [int, dec = ''] = value.split('.');
+  const d = dec.replace(/0+$/, '');
+  return d ? `${int},${d}` : int;
+}
+
 /** Litros: até 5 dígitos e 3 casas (mesma regra da API). */
 export const parseLiters = (input: string) => parseDecimalInput(input, 5, 3);
 /** Preço por litro: até 3 dígitos e 4 casas (mesma regra da API). */

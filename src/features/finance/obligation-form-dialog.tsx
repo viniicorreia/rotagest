@@ -136,9 +136,11 @@ interface Props {
   onOpenChange: (open: boolean) => void;
   /** Edição de um lançamento existente; sem ele, criação. */
   editing?: ObligationDetail | null;
+  /** Lançamento a duplicar: pré-preenche a criação (competência e vencimento atuais, lançamento único, sem anexos). */
+  duplicateOf?: ObligationDetail | null;
 }
 
-export function ObligationFormDialog({ config, open, onOpenChange, editing }: Props) {
+export function ObligationFormDialog({ config, open, onOpenChange, editing, duplicateOf }: Props) {
   const isPayable = config.side === 'payables';
   const categories = useCategories(config.categoryType, false, open);
   const { can } = useAuth();
@@ -147,15 +149,16 @@ export function ObligationFormDialog({ config, open, onOpenChange, editing }: Pr
   const invalidate = useInvalidateFinance();
   const keyRef = useRef(newIdempotencyKey());
 
+  const source = editing ?? duplicateOf;
   const defaults = (): FormValues => ({
-    description: editing?.description ?? '',
-    categoryId: editing?.category.id ?? '',
-    amount: editing ? toMoneyInput(editing.amount) : '',
+    description: source?.description ?? '',
+    categoryId: source?.category.id ?? '',
+    amount: source ? toMoneyInput(source.amount) : '',
     competence: editing?.competence ?? currentMonth(),
     dueDate: editing?.dueDate ?? todayISO(),
-    ...vehicleDefaults(editing),
-    supplierName: (editing && 'supplierName' in editing ? editing.supplierName : '') ?? '',
-    notes: editing?.notes ?? '',
+    ...vehicleDefaults(source),
+    supplierName: (source && 'supplierName' in source ? source.supplierName : '') ?? '',
+    notes: source?.notes ?? '',
     kind: 'SINGLE',
     installmentCount: '2',
     frequency: 'MONTHLY',
@@ -186,11 +189,16 @@ export function ObligationFormDialog({ config, open, onOpenChange, editing }: Pr
       keyRef.current = newIdempotencyKey();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, editing?.id]);
+  }, [open, editing?.id, duplicateOf?.id]);
 
   useEffect(() => {
     if (open && !form.getValues('accountId') && accounts.data?.items.length) form.setValue('accountId', accounts.data.items[0].id);
   }, [open, accounts.data, form]);
+
+  // Selects nativos perdem o valor pré-preenchido se as opções chegam depois de abrir; reaplica quando carregam.
+  useEffect(() => {
+    if (open) for (const key of (['categoryId'] as const)) form.setValue(key, form.getValues(key));
+  }, [open, categories.data, form]);
 
   async function submit(v: FormValues) {
     const value = parseMoneyInput(v.amount)!;
@@ -279,8 +287,11 @@ export function ObligationFormDialog({ config, open, onOpenChange, editing }: Pr
     <Dialog open={open} onOpenChange={(o) => !isSubmitting && onOpenChange(o)}>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>{editing ? `Editar ${config.singular}` : config.newLabel}</DialogTitle>
-          <DialogDescription>Competência é o mês a que o valor pertence; vencimento é quando deve ser pago.</DialogDescription>
+          <DialogTitle>{editing ? `Editar ${config.singular}` : duplicateOf ? `Duplicar ${config.singular}` : config.newLabel}</DialogTitle>
+          <DialogDescription>
+            {duplicateOf ? 'Dados copiados do lançamento escolhido. Confira competência, vencimento e valor antes de salvar. ' : ''}
+            Competência é o mês a que o valor pertence; vencimento é quando deve ser pago.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(submit)} noValidate className="space-y-4">
           {!editing && (
