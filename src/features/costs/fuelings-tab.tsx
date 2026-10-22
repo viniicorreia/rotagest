@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { Fuel, Plus } from 'lucide-react';
+import { Copy, Fuel, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { errorMessage, http } from '@/api/client';
 import type { Fueling, FuelingList } from '@/api/types';
@@ -24,9 +24,10 @@ interface Props {
   onPage: (page: number) => void;
   canManage: boolean;
   onCreate: () => void;
+  onDuplicate: (item: Fueling) => void;
 }
 
-export function FuelingsTab({ month, vehicleId, page, onPage, canManage, onCreate }: Props) {
+export function FuelingsTab({ month, vehicleId, page, onPage, canManage, onCreate, onDuplicate }: Props) {
   const [canceling, setCanceling] = useState<Fueling | null>(null);
   const query = new URLSearchParams({ month, page: String(page), pageSize: String(PAGE_SIZE) });
   if (vehicleId) query.set('vehicleId', vehicleId);
@@ -90,10 +91,17 @@ export function FuelingsTab({ month, vehicleId, page, onPage, canManage, onCreat
                 <div className="flex shrink-0 flex-col items-end gap-1">
                   <span className="text-sm font-semibold tabular-nums">{formatBRL(f.amount)}</span>
                   <CostPayableStatus payable={f.payable} />
-                  {canManage && canCancelCost(f.payable) && (
-                    <Button size="sm" variant="ghost" className="h-8 px-2 text-xs text-destructive" onClick={() => setCanceling(f)}>
-                      Cancelar
-                    </Button>
+                  {canManage && (
+                    <div className="flex gap-1">
+                      <Button size="sm" variant="ghost" className="h-8 px-2 text-xs" onClick={() => onDuplicate(f)}>
+                        Duplicar
+                      </Button>
+                      {canCancelCost(f.payable) && (
+                        <Button size="sm" variant="ghost" className="h-8 px-2 text-xs text-destructive" onClick={() => setCanceling(f)}>
+                          Cancelar
+                        </Button>
+                      )}
+                    </div>
                   )}
                 </div>
               </li>
@@ -137,7 +145,12 @@ export function FuelingsTab({ month, vehicleId, page, onPage, canManage, onCreat
                       <p className="mt-0.5 text-xs text-muted-foreground">vence {formatDateBR(f.payable.dueDate)}</p>
                     )}
                   </td>
-                  <td className="px-4 py-2 text-right">
+                  <td className="whitespace-nowrap px-4 py-2 text-right">
+                    {canManage && (
+                      <Button size="icon" variant="ghost" aria-label="Duplicar" title="Duplicar" onClick={() => onDuplicate(f)}>
+                        <Copy />
+                      </Button>
+                    )}
                     {canManage && canCancelCost(f.payable) && (
                       <Button size="sm" variant="ghost" className="text-destructive" onClick={() => setCanceling(f)}>
                         Cancelar

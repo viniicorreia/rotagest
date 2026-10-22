@@ -15,7 +15,7 @@ import { todayISO } from '@/lib/dates';
 import { formatBRL, parseMoneyInput } from '@/lib/money';
 import { newIdempotencyKey, useAccounts, useVehicles } from '@/features/finance/use-finance';
 import { SettleNowFields } from './cost-parts';
-import { parseLiters, parseOdometer, parsePricePerLiter, previewFuelTotal } from './format';
+import { parseLiters, parseOdometer, parsePricePerLiter, previewFuelTotal, toDecimalInput } from './format';
 import { FUEL_TYPE_LABELS, type FuelType } from './labels';
 import { useActiveDrivers, useInvalidateCosts } from './use-costs';
 
@@ -57,10 +57,12 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   defaultVehicleId?: string;
+  /** Abastecimento a duplicar: pré-preenche o formulário (data de hoje, sem odômetro); salvar cria um novo. */
+  source?: Fueling | null;
 }
 
 /** Registra abastecimento; a API calcula litros × preço (ou usa o total da nota) e gera a conta a pagar. */
-export function FuelingFormDialog({ open, onOpenChange, defaultVehicleId }: Props) {
+export function FuelingFormDialog({ open, onOpenChange, defaultVehicleId, source }: Props) {
   const { can } = useAuth();
   const vehicles = useVehicles(false, open);
   const drivers = useActiveDrivers(open && can('fleet:read'));
@@ -69,15 +71,16 @@ export function FuelingFormDialog({ open, onOpenChange, defaultVehicleId }: Prop
   const keyRef = useRef(newIdempotencyKey());
 
   const defaults = (): FormValues => ({
-    vehicleId: defaultVehicleId ?? '',
+    vehicleId: source?.vehicle.id ?? defaultVehicleId ?? '',
     date: todayISO(),
-    fuelType: 'DIESEL',
-    liters: '',
-    pricePerLiter: '',
+    fuelType: source?.fuelType ?? 'DIESEL',
+    liters: toDecimalInput(source?.liters),
+    pricePerLiter: toDecimalInput(source?.pricePerLiter),
+    // Total da nota fica vazio: a API recalcula litros × preço.
     amount: '',
     odometerKm: '',
-    station: '',
-    driverId: '',
+    station: source?.station ?? '',
+    driverId: source?.driver?.id ?? '',
     dueDate: '',
     notes: '',
     settleNow: false,
@@ -98,11 +101,16 @@ export function FuelingFormDialog({ open, onOpenChange, defaultVehicleId }: Prop
       keyRef.current = newIdempotencyKey();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, source?.id]);
 
   useEffect(() => {
     if (open && !form.getValues('accountId') && accounts.data?.items.length) form.setValue('accountId', accounts.data.items[0].id);
   }, [open, accounts.data, form]);
+
+  // Selects nativos perdem o valor pré-preenchido se as opções chegam depois de abrir; reaplica quando carregam.
+  useEffect(() => {
+    if (open) for (const key of (['vehicleId', 'driverId'] as const)) form.setValue(key, form.getValues(key));
+  }, [open, vehicles.data, drivers.data, form]);
 
   async function submit(v: FormValues) {
     const body: CreateFuelingRequest = {
@@ -136,8 +144,10 @@ export function FuelingFormDialog({ open, onOpenChange, defaultVehicleId }: Prop
     <Dialog open={open} onOpenChange={(o) => !isSubmitting && onOpenChange(o)}>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Novo abastecimento</DialogTitle>
-          <DialogDescription>Gera uma conta a pagar de combustível ligada ao veículo.</DialogDescription>
+          <DialogTitle>{source ? 'Duplicar abastecimento' : 'Novo abastecimento'}</DialogTitle>
+          <DialogDescription>
+            {source ? 'Dados copiados do abastecimento escolhido. Confira a data, os litros e o preço antes de registrar.' : 'Gera uma conta a pagar de combustível ligada ao veículo.'}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(submit)} noValidate className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">

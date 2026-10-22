@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { useState } from 'react';
+import type { Fueling, Maintenance } from '@/api/types';
 import { useSearchParams } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
@@ -36,6 +37,7 @@ export function CostsPage() {
   const page = Math.max(1, Number(params.get('page') ?? '1') || 1);
 
   const [creating, setCreating] = useState<'maintenance' | 'fueling' | null>(null);
+  const [duplicating, setDuplicating] = useState<{ maintenance?: Maintenance; fueling?: Fueling }>({});
   const vehicles = useVehicles(false, can('fleet:read'));
 
   function set(key: string, value: string) {
@@ -45,6 +47,14 @@ export function CostsPage() {
     if (key !== 'page') next.delete('page');
     setParams(next, { replace: true });
   }
+
+  function openCreate(kind: 'maintenance' | 'fueling') {
+    setDuplicating({});
+    setCreating(kind);
+  }
+
+  // A cópia de origem só é limpa ao abrir de novo, para o título não trocar durante a animação de fechar.
+  const closeForm = (open: boolean) => !open && setCreating(null);
 
   const createKind = tab === 'fuelings' ? 'fueling' : 'maintenance';
   const createLabel = tab === 'fuelings' ? 'Novo abastecimento' : 'Nova manutenção';
@@ -57,10 +67,10 @@ export function CostsPage() {
         actions={
           canManage && (
             <>
-              <Button variant={tab === 'fuelings' ? 'default' : 'outline'} className="hidden md:inline-flex" onClick={() => setCreating('fueling')}>
+              <Button variant={tab === 'fuelings' ? 'default' : 'outline'} className="hidden md:inline-flex" onClick={() => openCreate('fueling')}>
                 <Plus /> Abastecimento
               </Button>
-              <Button variant={tab === 'fuelings' ? 'outline' : 'default'} className="hidden md:inline-flex" onClick={() => setCreating('maintenance')}>
+              <Button variant={tab === 'fuelings' ? 'outline' : 'default'} className="hidden md:inline-flex" onClick={() => openCreate('maintenance')}>
                 <Plus /> Manutenção
               </Button>
             </>
@@ -100,15 +110,27 @@ export function CostsPage() {
 
       {tab === 'summary' && <SummaryTab month={month} vehicleId={vehicleId} />}
       {tab === 'maintenances' && (
-        <MaintenancesTab month={month} vehicleId={vehicleId} page={page} onPage={(p) => set('page', String(p))} canManage={canManage} onCreate={() => setCreating('maintenance')} />
+        <MaintenancesTab month={month} vehicleId={vehicleId} page={page} onPage={(p) => set('page', String(p))} canManage={canManage}
+          onCreate={() => openCreate('maintenance')}
+          onDuplicate={(m) => {
+            setDuplicating({ maintenance: m });
+            setCreating('maintenance');
+          }}
+        />
       )}
       {tab === 'fuelings' && (
-        <FuelingsTab month={month} vehicleId={vehicleId} page={page} onPage={(p) => set('page', String(p))} canManage={canManage} onCreate={() => setCreating('fueling')} />
+        <FuelingsTab month={month} vehicleId={vehicleId} page={page} onPage={(p) => set('page', String(p))} canManage={canManage}
+          onCreate={() => openCreate('fueling')}
+          onDuplicate={(f) => {
+            setDuplicating({ fueling: f });
+            setCreating('fueling');
+          }}
+        />
       )}
 
-      {canManage && <Fab icon={Plus} label={createLabel} onClick={() => setCreating(createKind)} />}
-      <MaintenanceFormDialog open={creating === 'maintenance'} onOpenChange={(o) => !o && setCreating(null)} defaultVehicleId={vehicleId || undefined} />
-      <FuelingFormDialog open={creating === 'fueling'} onOpenChange={(o) => !o && setCreating(null)} defaultVehicleId={vehicleId || undefined} />
+      {canManage && <Fab icon={Plus} label={createLabel} onClick={() => openCreate(createKind)} />}
+      <MaintenanceFormDialog open={creating === 'maintenance'} onOpenChange={closeForm} defaultVehicleId={vehicleId || undefined} source={duplicating.maintenance} />
+      <FuelingFormDialog open={creating === 'fueling'} onOpenChange={closeForm} defaultVehicleId={vehicleId || undefined} source={duplicating.fueling} />
     </>
   );
 }

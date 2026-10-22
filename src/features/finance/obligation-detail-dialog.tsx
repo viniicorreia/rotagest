@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Ban, CheckCircle2, Pencil, Repeat, Undo2 } from 'lucide-react';
+import { Ban, CheckCircle2, Copy, Pencil, Repeat, Undo2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { errorMessage, http } from '@/api/client';
@@ -42,6 +42,7 @@ export function ObligationDetailDialog({ config, id, onClose }: { config: SideCo
   const detail = useQuery({ queryKey: [config.side, 'detail', id], queryFn: () => http.get<ObligationDetail>(`${config.path}/${id}`), enabled: !!id });
   const [settling, setSettling] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [duplicating, setDuplicating] = useState(false);
   const [canceling, setCanceling] = useState(false);
   const [cancelScope, setCancelScope] = useState<'ONE' | 'THIS_AND_FUTURE'>('ONE');
   const [reversing, setReversing] = useState<string | null>(null);
@@ -52,7 +53,7 @@ export function ObligationDetailDialog({ config, id, onClose }: { config: SideCo
 
   return (
     <>
-      <Dialog open={!!id && !settling && !editing && !canceling && !reversing} onOpenChange={(o) => !o && onClose()}>
+      <Dialog open={!!id && !settling && !editing && !duplicating && !canceling && !reversing} onOpenChange={(o) => !o && onClose()}>
         <DialogContent className="sm:max-w-xl">
           <DialogHeader>
             <DialogTitle className="pr-6">{d?.description ?? 'Carregando…'}</DialogTitle>
@@ -155,14 +156,21 @@ export function ObligationDetailDialog({ config, id, onClose }: { config: SideCo
                 onChange={() => void invalidate()}
               />
 
-              {canManage && d.status !== 'CANCELED' && (
+              {canManage && (
                 <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end">
-                  <Button variant="ghost" className="text-destructive" onClick={() => setCanceling(true)}>
-                    <Ban /> Cancelar lançamento
+                  {d.status !== 'CANCELED' && (
+                    <Button variant="ghost" className="text-destructive" onClick={() => setCanceling(true)}>
+                      <Ban /> Cancelar lançamento
+                    </Button>
+                  )}
+                  <Button variant="outline" onClick={() => setDuplicating(true)}>
+                    <Copy /> Duplicar
                   </Button>
-                  <Button variant="outline" onClick={() => setEditing(true)}>
-                    <Pencil /> Editar
-                  </Button>
+                  {d.status !== 'CANCELED' && (
+                    <Button variant="outline" onClick={() => setEditing(true)}>
+                      <Pencil /> Editar
+                    </Button>
+                  )}
                   {isOpen && (
                     <Button onClick={() => setSettling(true)}>
                       <CheckCircle2 /> {config.settleLabel}
@@ -177,6 +185,7 @@ export function ObligationDetailDialog({ config, id, onClose }: { config: SideCo
 
       <SettleDialog config={config} target={settling && d ? d : null} onClose={() => setSettling(false)} />
       <ObligationFormDialog config={config} open={editing} onOpenChange={setEditing} editing={d} />
+      <ObligationFormDialog config={config} open={duplicating} onOpenChange={setDuplicating} duplicateOf={d} />
       <ReasonDialog
         open={!!reversing}
         onOpenChange={(o) => !o && setReversing(null)}

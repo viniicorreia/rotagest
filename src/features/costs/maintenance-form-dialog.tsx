@@ -11,7 +11,7 @@ import { Field } from '@/components/ui/field';
 import { Input, NativeSelect } from '@/components/ui/input';
 import { MoneyInput } from '@/components/ui/money-input';
 import { todayISO } from '@/lib/dates';
-import { parseMoneyInput } from '@/lib/money';
+import { parseMoneyInput, toMoneyInput } from '@/lib/money';
 import { newIdempotencyKey, useAccounts, useCategories, useVehicles } from '@/features/finance/use-finance';
 import { SettleNowFields } from './cost-parts';
 import { parseOdometer } from './format';
@@ -48,10 +48,12 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   defaultVehicleId?: string;
+  /** Manutenção a duplicar: pré-preenche o formulário (data de hoje, sem odômetro); salvar cria uma nova. */
+  source?: Maintenance | null;
 }
 
 /** Registra a manutenção; a API gera a conta a pagar ligada ao veículo (opcionalmente já paga). */
-export function MaintenanceFormDialog({ open, onOpenChange, defaultVehicleId }: Props) {
+export function MaintenanceFormDialog({ open, onOpenChange, defaultVehicleId, source }: Props) {
   const vehicles = useVehicles(false, open);
   const categories = useCategories('EXPENSE', false, open);
   const accounts = useAccounts(false, open);
@@ -59,15 +61,15 @@ export function MaintenanceFormDialog({ open, onOpenChange, defaultVehicleId }: 
   const keyRef = useRef(newIdempotencyKey());
 
   const defaults = (): FormValues => ({
-    vehicleId: defaultVehicleId ?? '',
-    type: 'PREVENTIVE',
-    description: '',
+    vehicleId: source?.vehicle.id ?? defaultVehicleId ?? '',
+    type: source?.type ?? 'PREVENTIVE',
+    description: source?.description ?? '',
     date: todayISO(),
-    amount: '',
+    amount: source ? toMoneyInput(source.amount) : '',
     dueDate: '',
     odometerKm: '',
-    supplierName: '',
-    notes: '',
+    supplierName: source?.supplierName ?? '',
+    notes: source?.notes ?? '',
     categoryId: '',
     settleNow: false,
     accountId: '',
@@ -85,11 +87,16 @@ export function MaintenanceFormDialog({ open, onOpenChange, defaultVehicleId }: 
       keyRef.current = newIdempotencyKey();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, source?.id]);
 
   useEffect(() => {
     if (open && !form.getValues('accountId') && accounts.data?.items.length) form.setValue('accountId', accounts.data.items[0].id);
   }, [open, accounts.data, form]);
+
+  // Selects nativos perdem o valor pré-preenchido se as opções chegam depois de abrir; reaplica quando carregam.
+  useEffect(() => {
+    if (open) for (const key of (['vehicleId', 'categoryId'] as const)) form.setValue(key, form.getValues(key));
+  }, [open, vehicles.data, categories.data, form]);
 
   async function submit(v: FormValues) {
     const body: CreateMaintenanceRequest = {
@@ -119,8 +126,10 @@ export function MaintenanceFormDialog({ open, onOpenChange, defaultVehicleId }: 
     <Dialog open={open} onOpenChange={(o) => !isSubmitting && onOpenChange(o)}>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Nova manutenção</DialogTitle>
-          <DialogDescription>Gera uma conta a pagar ligada ao veículo.</DialogDescription>
+          <DialogTitle>{source ? 'Duplicar manutenção' : 'Nova manutenção'}</DialogTitle>
+          <DialogDescription>
+            {source ? 'Dados copiados da manutenção escolhida. Confira a data e o valor antes de registrar.' : 'Gera uma conta a pagar ligada ao veículo.'}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(submit)} noValidate className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
