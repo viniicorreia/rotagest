@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { LogOut, Moon, Sun } from 'lucide-react';
+import { LogOut, Moon, Shield, Sun } from 'lucide-react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { type CompanyInput } from '@/lib/forms';
 import { PageHeader } from '@/components/layout/page-header';
@@ -14,6 +14,7 @@ import { useAuth } from '@/lib/auth';
 import { useTheme } from '@/lib/theme';
 import type { Company } from '@/api/types';
 import { CompanyForm } from '../companies/company-form';
+import { SupportAccessCard } from '../support/support-access-card';
 import { CategoriesCard } from './categories-card';
 
 export function SettingsPage() {
@@ -39,7 +40,7 @@ export function SettingsPage() {
     <>
       <PageHeader title="Configurações" />
       <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+        <Card className="min-w-0 lg:col-span-2">
           <CardHeader>
             <CardTitle>Dados da empresa</CardTitle>
             <CardDescription>{canEdit ? 'Usados em relatórios e documentos.' : 'Somente o proprietário pode alterar estes dados.'}</CardDescription>
@@ -55,7 +56,7 @@ export function SettingsPage() {
           </CardContent>
         </Card>
 
-        <div className="space-y-6 lg:row-span-2">
+        <div className="min-w-0 space-y-6 lg:row-span-2">
           <Card>
             <CardHeader>
               <CardTitle>Sua conta</CardTitle>
@@ -70,8 +71,14 @@ export function SettingsPage() {
               <Button variant="outline" className="w-full justify-start" onClick={() => setConfirmLogoutAll(true)}>
                 <LogOut /> Sair de todos os dispositivos
               </Button>
+              <Button asChild variant="outline" className="w-full justify-start">
+                <Link to="/app/account">
+                  <Shield /> Privacidade e dados
+                </Link>
+              </Button>
             </CardContent>
           </Card>
+          {can('support:grant') && <SupportAccessCard />}
         </div>
         {can('finance:read') && (
           <div className="lg:col-span-2">

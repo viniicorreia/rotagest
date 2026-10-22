@@ -2,6 +2,7 @@ import { ArrowLeft, Building2, CreditCard, LayoutDashboard, Package, Settings, S
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { Brand } from '@/components/layout/brand';
 import { UserMenu } from '@/components/layout/user-menu';
+import { SupportBanner } from '@/features/support/support-banner';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
@@ -73,6 +74,7 @@ export function PlatformLayout() {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
+        <SupportBanner />
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b bg-card/95 px-4 backdrop-blur md:hidden">
           <div className="flex min-w-0 items-center gap-2">
             <Brand collapsed />

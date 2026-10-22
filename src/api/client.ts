@@ -33,6 +33,15 @@ export function setSessionLostHandler(handler: () => void): void {
   onSessionLost = handler;
 }
 
+/** Código da API para escrita bloqueada no modo suporte (somente leitura). */
+export const SUPPORT_READ_ONLY = 'SUPPORT_READ_ONLY';
+let onReadOnly: ((message: string) => void) | null = null;
+
+/** Avisa globalmente (toast) quando uma escrita é recusada no modo suporte, mesmo em telas que tratam o erro em linha. */
+export function setReadOnlyHandler(handler: ((message: string) => void) | null): void {
+  onReadOnly = handler;
+}
+
 async function doRefresh(): Promise<TokenResponse | null> {
   const run = async () => {
     const res = await fetch(`${API_URL}/auth/refresh`, { method: 'POST', credentials: 'include' });
@@ -97,6 +106,7 @@ async function request(method: Method, path: string, body?: unknown): Promise<Re
     }
     const message =
       res.status >= 500 ? 'Não foi possível concluir. Tente novamente em instantes.' : (err.message ?? 'Erro inesperado');
+    if (res.status === 403 && err.code === SUPPORT_READ_ONLY) onReadOnly?.(message);
     throw new ApiError(res.status, err.code ?? 'ERROR', message, err.details);
   }
   return res;
@@ -114,6 +124,18 @@ async function download(path: string): Promise<{ blob: Blob; fileName: string }>
   const disposition = res.headers.get('content-disposition') ?? '';
   const match = /filename\*=UTF-8''([^;]+)/.exec(disposition) ?? /filename="([^"]+)"/.exec(disposition);
   return { blob: await res.blob(), fileName: match ? decodeURIComponent(match[1]) : 'arquivo' };
+}
+
+/** Dispara o "salvar" do navegador para um arquivo já baixado. */
+export function saveBlob(blob: Blob, fileName: string): void {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }
 
 export const http = {

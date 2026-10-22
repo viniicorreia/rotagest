@@ -2,6 +2,7 @@ import { MoreHorizontal, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { SupportBanner } from '@/features/support/support-banner';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { Brand } from './brand';
@@ -89,6 +90,7 @@ export function AppLayout() {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
+        <SupportBanner />
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b bg-card/95 px-4 backdrop-blur md:hidden">
           <Brand collapsed />
           <div className="flex min-w-0 items-center gap-2">

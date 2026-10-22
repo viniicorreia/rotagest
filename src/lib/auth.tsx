@@ -13,7 +13,13 @@ interface AuthContextValue {
   /** Grava tokens vindos de login/cadastro/troca de empresa e recarrega o usuário. */
   applyTokens: (tokens: TokenResponse) => Promise<void>;
   switchCompany: (companyId: string) => Promise<void>;
+  /** SUPER_ADMIN: abre a empresa em modo suporte (somente leitura, com autorização do dono). */
+  startSupportSession: (companyId: string) => Promise<void>;
+  /** Sai do modo suporte; a sessão volta sem empresa ativa. */
+  endSupportSession: () => Promise<void>;
   logout: () => Promise<void>;
+  /** Limpa a sessão local sem chamar a API (ex.: conta excluída, sessões já revogadas). */
+  clearSession: () => void;
   can: (...permissions: Permission[]) => boolean;
 }
 
@@ -67,15 +73,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [applyTokens],
   );
 
+  const startSupportSession = useCallback(
+    async (companyId: string) => {
+      const tokens = await http.post<TokenResponse>(`/platform/companies/${companyId}/support-session`);
+      await applyTokens(tokens);
+    },
+    [applyTokens],
+  );
+
+  const endSupportSession = useCallback(async () => {
+    const tokens = await http.post<TokenResponse>('/platform/support-session/end');
+    await applyTokens(tokens);
+  }, [applyTokens]);
+
+  const clearSession = useCallback(() => {
+    tokenStore.set(null);
+    queryClient.clear();
+    setStatus('anonymous');
+  }, [queryClient]);
+
   const logout = useCallback(async () => {
     try {
       await http.post('/auth/logout');
     } finally {
-      tokenStore.set(null);
-      queryClient.clear();
-      setStatus('anonymous');
+      clearSession();
     }
-  }, [queryClient]);
+  }, [clearSession]);
 
   const me = meQuery.data;
   const can = useCallback(
@@ -86,8 +109,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const effectiveStatus: Status = status === 'authenticated' && meQuery.isPending ? 'loading' : status;
 
   const value = useMemo(
-    () => ({ status: effectiveStatus, me, applyTokens, switchCompany, logout, can }),
-    [effectiveStatus, me, applyTokens, switchCompany, logout, can],
+    () => ({ status: effectiveStatus, me, applyTokens, switchCompany, startSupportSession, endSupportSession, logout, clearSession, can }),
+    [effectiveStatus, me, applyTokens, switchCompany, startSupportSession, endSupportSession, logout, clearSession, can],
   );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

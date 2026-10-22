@@ -1,10 +1,10 @@
 import { format } from 'date-fns';
-import { Ban, Building2, RotateCcw, Search, XCircle } from 'lucide-react';
+import { Ban, Building2, LifeBuoy, LogIn, RotateCcw, Search, ShieldOff, XCircle } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { errorMessage, http } from '@/api/client';
-import type { CompanyStatus, PlatformCompany, PlatformCompanyDetail } from '@/api/types';
+import type { CompanyStatus, PlatformCompany, PlatformCompanyDetail, PlatformSupportAccess } from '@/api/types';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -13,6 +13,8 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { Input, NativeSelect } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ReasonDialog } from '@/features/finance/reason-dialog';
+import { formatDateTime } from '@/features/support/support-logic';
+import { useAuth } from '@/lib/auth';
 import { formatDocument } from '@/lib/documents';
 import { cn } from '@/lib/utils';
 import { auditActionLabel, COMPANY_STATUS_LABELS, formatUsage } from './labels';
@@ -320,6 +322,10 @@ function CompanyDetailBody({ company: c, onAction }: { company: PlatformCompanyD
         </div>
       </div>
 
+      <Section title="Acesso aos dados">
+        <SupportAccessBox companyId={c.id} access={c.supportAccess} />
+      </Section>
+
       <div className="grid gap-6 sm:grid-cols-2">
         <Section title="Cadastro">
           <dl className="space-y-1.5">
@@ -382,6 +388,52 @@ function CompanyDetailBody({ company: c, onAction }: { company: PlatformCompanyD
           <p className="text-sm text-muted-foreground">Nenhuma ação registrada.</p>
         )}
       </Section>
+    </div>
+  );
+}
+
+/** Modo suporte: só com autorização vigente do dono; a API revalida ao abrir a sessão. */
+function SupportAccessBox({ companyId, access }: { companyId: string; access: PlatformSupportAccess | null }) {
+  const { startSupportSession } = useAuth();
+  const navigate = useNavigate();
+  const invalidate = useInvalidatePlatform();
+  const [busy, setBusy] = useState(false);
+
+  if (!access) {
+    return (
+      <p className="flex items-center gap-2 rounded-lg border border-dashed px-3 py-2.5 text-sm text-muted-foreground">
+        <ShieldOff className="size-4 shrink-0" aria-hidden />A empresa não autorizou acesso aos dados
+      </p>
+    );
+  }
+
+  async function enter() {
+    setBusy(true);
+    try {
+      await startSupportSession(companyId);
+      navigate('/app/dashboard');
+      toast.success('Modo suporte: somente leitura');
+    } catch (e) {
+      toast.error(errorMessage(e));
+      setBusy(false);
+      // 409: a autorização expirou ou foi revogada enquanto a tela estava aberta.
+      await invalidate();
+    }
+  }
+
+  return (
+    <div className="space-y-3 rounded-lg border border-amber-400/60 bg-amber-50 p-3 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100">
+      <div className="flex items-start gap-2">
+        <LifeBuoy className="mt-0.5 size-4 shrink-0" aria-hidden />
+        <div className="min-w-0 space-y-1">
+          <p className="text-sm font-medium">Autorizado até {formatDateTime(access.expiresAt)}</p>
+          <p className="break-words text-sm opacity-80">“{access.reason}”</p>
+          <p className="text-xs opacity-80">Somente leitura. O dono vê cada página que você abrir.</p>
+        </div>
+      </div>
+      <Button size="sm" loading={busy} onClick={enter}>
+        <LogIn /> Entrar como suporte
+      </Button>
     </div>
   );
 }

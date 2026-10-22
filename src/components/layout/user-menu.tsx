@@ -1,4 +1,4 @@
-import { LogOut, Moon, ShieldCheck, Sun } from 'lucide-react';
+import { LogOut, Moon, ShieldCheck, Sun, UserRound } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { useTheme } from '@/lib/theme';
@@ -21,6 +21,9 @@ export function UserMenu() {
           <p className="truncate text-xs font-normal text-muted-foreground">{me.user.email}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={() => navigate(me.activeCompany ? '/app/account' : '/account')}>
+          <UserRound /> Minha conta e privacidade
+        </DropdownMenuItem>
         {me.user.platformRole === 'SUPER_ADMIN' && (
           <DropdownMenuItem onSelect={() => navigate('/platform')}>
             <ShieldCheck /> Painel da plataforma
