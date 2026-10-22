@@ -17,7 +17,11 @@ export function RequireAuth() {
   return <Outlet />;
 }
 
-/** Exige empresa ativa. Sem nenhuma empresa → onboarding; com várias e nenhuma ativa → seletor. */
+/**
+ * Exige empresa ativa. Sem nenhuma empresa → onboarding; com várias e nenhuma ativa → seletor.
+ * A empresa ativa pode não estar em `me.companies`: no modo suporte o SUPER_ADMIN entra
+ * numa empresa da qual não é membro (activeCompany.support preenchido) e deve passar.
+ */
 export function RequireCompany() {
   const { me } = useAuth();
   if (!me) return <FullPageLoader />;

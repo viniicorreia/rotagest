@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { safeNext } from '@/app/guards';
 import { tokenStore } from '@/lib/token-store';
-import { API_URL, http, refreshSession } from './client';
+import { API_URL, ApiError, http, refreshSession, setReadOnlyHandler } from './client';
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -52,5 +52,30 @@ describe('cliente HTTP', () => {
     expect(await refreshSession()).toBeNull();
     expect(tokenStore.get()).toBeNull();
     expect(JSON.stringify(localStorage)).not.toContain('Bearer');
+  });
+});
+
+describe('modo suporte (somente leitura)', () => {
+  afterEach(() => setReadOnlyHandler(null));
+
+  it('avisa o handler global e ainda rejeita com o erro da API', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(JSON.stringify({ code: 'SUPPORT_READ_ONLY', message: 'O acesso de suporte é somente leitura.' }), { status: 403 })),
+    );
+    const handler = vi.fn();
+    setReadOnlyHandler(handler);
+    const error = await http.post('/vehicles', { plate: 'ABC1D23' }).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(ApiError);
+    expect((error as ApiError).code).toBe('SUPPORT_READ_ONLY');
+    expect(handler).toHaveBeenCalledWith('O acesso de suporte é somente leitura.');
+  });
+
+  it('não dispara o aviso para outros 403', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ code: 'FORBIDDEN', message: 'Sem permissão' }), { status: 403 })));
+    const handler = vi.fn();
+    setReadOnlyHandler(handler);
+    await expect(http.post('/vehicles', {})).rejects.toBeInstanceOf(ApiError);
+    expect(handler).not.toHaveBeenCalled();
   });
 });

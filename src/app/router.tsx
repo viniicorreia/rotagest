@@ -47,6 +47,10 @@ const CostsPage = lazyPage(() => import('@/features/costs/costs-page'), 'CostsPa
 const TeamPage = lazyPage(() => import('@/features/team/team-page'), 'TeamPage');
 const SubscriptionPage = lazyPage(() => import('@/features/subscriptions/subscription-page'), 'SubscriptionPage');
 const SettingsPage = lazyPage(() => import('@/features/settings/settings-page'), 'SettingsPage');
+const AccountPage = lazyPage(() => import('@/features/account/account-page'), 'AccountPage');
+const StandaloneAccountPage = lazyPage(() => import('@/features/account/account-page'), 'StandaloneAccountPage');
+// Público
+const PrivacyPage = lazyPage(() => import('@/features/legal/privacy-page'), 'PrivacyPage');
 // Painel da plataforma (SUPER_ADMIN)
 const PlatformLayout = lazyPage(() => import('@/features/platform/platform-layout'), 'PlatformLayout');
 const PlatformOverviewPage = lazyPage(() => import('@/features/platform/overview-page'), 'PlatformOverviewPage');
@@ -112,11 +116,14 @@ export const router = createBrowserRouter([
         ],
       },
       { path: '/reset-password', element: <ResetPasswordPage /> },
+      { path: '/privacidade', element: <PrivacyPage /> },
       { path: '/invite/:token', element: <InvitePage /> },
       {
         element: <RequireAuth />,
         children: [
           { path: '/onboarding', element: <OnboardingPage /> },
+          // Minha conta sem o shell do app: vale para quem ainda não tem empresa (e para o admin da plataforma).
+          { path: '/account', element: <StandaloneAccountPage /> },
           {
             element: <RequirePlatformAdmin />,
             children: [
@@ -282,6 +289,7 @@ export const router = createBrowserRouter([
                         ),
                       },
                       { path: 'settings', element: <SettingsPage /> },
+                      { path: 'account', element: <AccountPage /> },
                       // Nomes de rota da especificação → páginas existentes (a permissão é conferida no destino).
                       { path: 'drivers', element: <Navigate to="/app/operations" replace /> },
                       { path: 'routes', element: <Navigate to="/app/operations?tab=routes" replace /> },

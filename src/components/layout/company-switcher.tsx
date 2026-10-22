@@ -18,6 +18,17 @@ export function CompanySwitcher({ compact }: { compact?: boolean }) {
   const navigate = useNavigate();
   const active = me?.activeCompany;
 
+  // Modo suporte: a empresa não é do usuário; não há para onde trocar.
+  if (active?.support) {
+    return (
+      <div className={cn('flex min-w-0 items-center gap-2 rounded-lg border border-amber-400 bg-amber-50 px-3 py-2 text-sm text-amber-950', compact ? 'max-w-[60vw]' : 'w-full')}>
+        <Building2 className="size-4 shrink-0" aria-hidden />
+        <span className="min-w-0 flex-1 truncate font-medium">{active.tradeName}</span>
+        <span className="shrink-0 text-xs">Suporte</span>
+      </div>
+    );
+  }
+
   async function choose(id: string) {
     if (id === active?.id) return;
     try {

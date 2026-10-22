@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { Brand } from '@/components/layout/brand';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -14,6 +15,9 @@ export function AuthLayout({ title, description, children, footer }: { title: st
         <CardContent>{children}</CardContent>
       </Card>
       {footer && <div className="text-center text-sm text-muted-foreground">{footer}</div>}
+      <Link to="/privacidade" className="text-xs text-muted-foreground hover:text-foreground hover:underline">
+        Política de Privacidade
+      </Link>
     </div>
   );
 }
