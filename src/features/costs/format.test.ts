@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatCostPerKm, parseLiters, parseOdometer, parsePricePerLiter, previewFuelTotal } from './format';
+import { formatCostPerKm, parseLiters, parseOdometer, parsePricePerLiter, previewFuelTotal, toDecimalInput } from './format';
 
 describe('parseLiters', () => {
   it('aceita vírgula ou ponto com até 3 casas', () => {
@@ -44,5 +44,15 @@ describe('formatCostPerKm', () => {
   it('exibe 4 casas', () => {
     expect(formatCostPerKm('0.4321').replace(/\s/g, ' ')).toBe('R$ 0,4321/km');
     expect(formatCostPerKm(null)).toBe('—');
+  });
+});
+
+describe('toDecimalInput', () => {
+  it('converte o decimal da API para o formato do campo, sem zeros à direita', () => {
+    expect(toDecimalInput('6.0990')).toBe('6,099');
+    expect(toDecimalInput('45.000')).toBe('45');
+    expect(toDecimalInput('45.320')).toBe('45,32');
+    expect(toDecimalInput(null)).toBe('');
+    expect(parseLiters(toDecimalInput('45.320'))).toBe('45.32');
   });
 });
