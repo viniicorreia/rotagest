@@ -11,7 +11,42 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Saúde geral (inclui o banco); mantido por compatibilidade */
         get: operations["Health_check"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/health/live": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liveness: o processo está de pé (não consulta o banco) */
+        get: operations["Health_live"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/health/ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Readiness: banco respondendo; 503 quando indisponível */
+        get: operations["Health_ready"];
         put?: never;
         post?: never;
         delete?: never;
@@ -873,6 +908,23 @@ export interface paths {
         patch: operations["Drivers_update"];
         trace?: never;
     };
+    "/api/v1/drivers/{id}/anonymize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Remove os dados pessoais de um motorista inativo (LGPD), mantendo o histórico */
+        post: operations["Drivers_anonymize"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/routes": {
         parameters: {
             query?: never;
@@ -1607,6 +1659,124 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/support-access": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["SupportAccess_overview"];
+        put?: never;
+        /** Autoriza o suporte a ver os dados da empresa (somente leitura, até 72 h) */
+        post: operations["SupportAccess_grant"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support-access/{id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SupportAccess_revoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support-access/{id}/log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** O que o suporte consultou com esta autorização (últimas 200 leituras) */
+        get: operations["SupportAccess_log"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/companies/{id}/support-session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Abre a empresa em modo suporte (exige autorização vigente do dono) */
+        post: operations["SupportSession_start"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/support-session/end": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sai do modo suporte e volta ao painel da plataforma */
+        post: operations["SupportSession_end"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/data-export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Baixa os dados pessoais do usuário (LGPD) */
+        get: operations["Privacy_export"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Exclui a conta do usuário (anonimiza nome e e-mail, encerra sessões e vínculos) */
+        post: operations["Privacy_remove"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1614,7 +1784,7 @@ export interface components {
         /** @enum {string} */
         MemberRole: "OWNER" | "MANAGER" | "FINANCIAL" | "DRIVER";
         /** @enum {string} */
-        Permission: "company:read" | "company:update" | "members:read" | "members:manage" | "subscription:read" | "fleet:read" | "fleet:manage" | "contracts:read" | "contracts:manage" | "finance:read" | "finance:manage" | "accounts:manage" | "accounts:adjust" | "expenses:approve" | "expenses:own" | "assignments:own" | "maintenance:manage" | "reports:read" | "closing:manage" | "closing:reopen" | "settings:manage";
+        Permission: "company:read" | "company:update" | "members:read" | "members:manage" | "subscription:read" | "fleet:read" | "fleet:manage" | "contracts:read" | "contracts:manage" | "finance:read" | "finance:manage" | "accounts:manage" | "accounts:adjust" | "expenses:approve" | "expenses:own" | "assignments:own" | "maintenance:manage" | "reports:read" | "closing:manage" | "closing:reopen" | "settings:manage" | "support:grant";
         RoleInfoDto: {
             key: components["schemas"]["MemberRole"];
             label: string;
@@ -1678,12 +1848,21 @@ export interface components {
             role: components["schemas"]["MemberRole"];
             roleLabel: string;
         };
+        SupportSessionDto: {
+            /**
+             * Format: date-time
+             * @description Fim da autorização dada pelo dono
+             */
+            expiresAt: string;
+        };
         ActiveCompanyDto: {
             /** Format: uuid */
             id: string;
             tradeName: string;
             role: components["schemas"]["MemberRole"];
             permissions: components["schemas"]["Permission"][];
+            /** @description Preenchido quando é o suporte da plataforma (somente leitura) */
+            support: components["schemas"]["SupportSessionDto"] | null;
         };
         MeResponseDto: {
             user: components["schemas"]["MeUserDto"];
@@ -1861,6 +2040,11 @@ export interface components {
             name: string;
             email: string;
         };
+        PlatformSupportAccessDto: {
+            /** Format: date-time */
+            expiresAt: string;
+            reason: string;
+        };
         PlatformAuditEntryDto: {
             id: string;
             action: string;
@@ -1891,6 +2075,8 @@ export interface components {
             usage: components["schemas"]["PlatformUsageDto"];
             /** @description Proprietários (OWNER) ativos */
             owners: components["schemas"]["PlatformPersonDto"][];
+            /** @description Autorização vigente do dono para o suporte ver os dados */
+            supportAccess: components["schemas"]["PlatformSupportAccessDto"] | null;
             /** @description Ações da plataforma e do gateway sobre esta empresa */
             history: components["schemas"]["PlatformAuditEntryDto"][];
         };
@@ -2730,6 +2916,8 @@ export interface components {
             hiredAt: string | null;
             employmentType: components["schemas"]["EmploymentType"];
             status: components["schemas"]["RecordStatus"];
+            /** @description Dados pessoais removidos (LGPD); o cadastro não pode mais ser editado */
+            anonymized: boolean;
             /** @description Usuário vinculado (portal do motorista) */
             member: components["schemas"]["RefDto"] | null;
             /** @description Rotas em que está atribuído hoje */
@@ -4042,6 +4230,74 @@ export interface components {
             settlement: components["schemas"]["SettlementDto"];
             receivable: components["schemas"]["ReceivableDto"];
         };
+        /** @enum {string} */
+        SupportGrantStatus: "ACTIVE" | "EXPIRED" | "REVOKED";
+        SupportPersonDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        SupportGrantDto: {
+            /** Format: uuid */
+            id: string;
+            status: components["schemas"]["SupportGrantStatus"];
+            reason: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            expiresAt: string;
+            /** Format: date-time */
+            revokedAt: string | null;
+            grantedBy: components["schemas"]["SupportPersonDto"];
+            revokedBy: components["schemas"]["SupportPersonDto"] | null;
+            /** @description Quantas leituras o suporte fez com esta autorização */
+            accessCount: number;
+        };
+        SupportAccessOverviewDto: {
+            active: components["schemas"]["SupportGrantDto"] | null;
+            /** @description Últimas 20 autorizações */
+            grants: components["schemas"]["SupportGrantDto"][];
+            /** @description E-mail de suporte da plataforma */
+            supportEmail: string | null;
+        };
+        CreateSupportGrantDto: {
+            /**
+             * @description Por quantas horas o suporte pode ver os dados
+             * @example 24
+             */
+            hours: number;
+            /** @example Conferir o relatório de setembro que não fecha */
+            reason: string;
+        };
+        SupportAccessLogEntryDto: {
+            /** Format: date-time */
+            at: string;
+            actorName: string | null;
+            /** @example GET */
+            method: string;
+            /** @example /api/v1/reports/vehicle-result */
+            path: string;
+        };
+        PersonalDataExportDto: {
+            /** Format: date-time */
+            generatedAt: string;
+            /** @description Cadastro do usuário */
+            user: Record<string, never>;
+            /** @description Vínculos com empresas */
+            memberships: Record<string, never>[];
+            /** @description Cadastros de motorista ligados ao usuário */
+            driverProfiles: Record<string, never>[];
+            /** @description Sessões (aparelhos e IPs) */
+            sessions: Record<string, never>[];
+            /** @description Convites recebidos */
+            invitations: Record<string, never>[];
+            /** @description Ações registradas na auditoria (últimas 1000) */
+            activity: Record<string, never>[];
+        };
+        DeleteAccountDto: {
+            /** @description Senha atual, para confirmar */
+            password: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -4052,6 +4308,40 @@ export interface components {
 export type $defs = Record<string, never>;
 export interface operations {
     Health_check: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    Health_live: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    Health_ready: {
         parameters: {
             query?: never;
             header?: never;
@@ -6060,6 +6350,36 @@ export interface operations {
                 "application/json": components["schemas"]["UpdateDriverDto"];
             };
         };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DriverDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Drivers_anonymize: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             200: {
                 headers: {
@@ -8101,6 +8421,242 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    SupportAccess_overview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupportAccessOverviewDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    SupportAccess_grant: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSupportGrantDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupportGrantDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    SupportAccess_revoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupportGrantDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    SupportAccess_log: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupportAccessLogEntryDto"][];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    SupportSession_start: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokenResponseDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    SupportSession_end: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokenResponseDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Privacy_export: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonalDataExportDto"];
+                };
+            };
+            /** @description Erro (formato padrão) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    Privacy_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteAccountDto"];
+            };
+        };
         responses: {
             204: {
                 headers: {

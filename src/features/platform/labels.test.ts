@@ -17,6 +17,13 @@ describe('platform labels', () => {
     expect(auditActionLabel('other.thing')).toBe('other.thing');
   });
 
+  it('labels support access actions', () => {
+    expect(auditActionLabel('support.granted')).toBe('Dono autorizou o acesso do suporte');
+    expect(auditActionLabel('support.revoked')).toBe('Dono revogou o acesso do suporte');
+    expect(auditActionLabel('support.session_started')).toBe('Suporte entrou na empresa');
+    expect(auditActionLabel('support.something_new')).toBe('Acesso do suporte');
+  });
+
   it('labels free-text statuses', () => {
     expect(subscriptionStatusLabel('PAST_DUE')).toBe('Em atraso');
     expect(subscriptionStatusLabel('UNKNOWN')).toBe('UNKNOWN');

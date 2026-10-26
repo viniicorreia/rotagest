@@ -137,3 +137,13 @@ export type PlatformSettings = S['PlatformSettingsDto'];
 export type UpdatePlatformSettingsRequest = S['UpdatePlatformSettingsDto'];
 export type CompanyStatus = S['CompanyStatus'];
 export type BillingInterval = S['BillingInterval'];
+
+// Fase 6 — produção: acesso do suporte e LGPD
+export type ActiveCompany = S['ActiveCompanyDto'];
+export type SupportGrant = S['SupportGrantDto'];
+export type SupportGrantStatus = S['SupportGrantStatus'];
+export type SupportAccessOverview = S['SupportAccessOverviewDto'];
+export type CreateSupportGrantRequest = S['CreateSupportGrantDto'];
+export type SupportAccessLogEntry = S['SupportAccessLogEntryDto'];
+export type PlatformSupportAccess = S['PlatformSupportAccessDto'];
+export type DeleteAccountRequest = S['DeleteAccountDto'];

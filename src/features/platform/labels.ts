@@ -58,6 +58,10 @@ const AUDIT_ACTION_LABELS: Record<string, string> = {
   'platform.plan.updated': 'Plano alterado',
   'platform.settings.updated': 'Configurações alteradas',
   'billing.subscription.status': 'Status da assinatura alterado pelo gateway',
+  'support.granted': 'Dono autorizou o acesso do suporte',
+  'support.revoked': 'Dono revogou o acesso do suporte',
+  'support.session_started': 'Suporte entrou na empresa',
+  'support.session_ended': 'Suporte saiu da empresa',
 };
 
 /** Converte a chave de auditoria (platform.company.suspended) em texto legível. */
@@ -65,6 +69,7 @@ export function auditActionLabel(action: string): string {
   if (AUDIT_ACTION_LABELS[action]) return AUDIT_ACTION_LABELS[action];
   if (action.startsWith('billing.')) return 'Evento de cobrança';
   if (action.startsWith('platform.')) return 'Ação da plataforma';
+  if (action.startsWith('support.')) return 'Acesso do suporte';
   return action;
 }
 

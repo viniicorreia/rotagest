@@ -1,4 +1,4 @@
-import { MoreVertical, Pencil, Plus, Trash2, UserRound } from 'lucide-react';
+import { Eraser, MoreVertical, Pencil, Plus, Trash2, UserRound } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { errorMessage, http } from '@/api/client';
@@ -14,8 +14,9 @@ import { Segmented } from '@/components/ui/segmented';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatDateBR } from '@/lib/dates';
 import { formatDocument } from '@/lib/documents';
+import { AnonymizeDriverDialog } from './anonymize-driver-dialog';
 import { DriverFormDialog } from './driver-form-dialog';
-import { EMPLOYMENT_TYPE_LABELS, useDrivers, useInvalidateFleet } from './use-fleet';
+import { canAnonymize, EMPLOYMENT_TYPE_LABELS, useDrivers, useInvalidateFleet } from './use-fleet';
 
 type View = 'ACTIVE' | 'INACTIVE' | 'ALL';
 
@@ -25,6 +26,7 @@ export function DriversTab({ canManage }: { canManage: boolean }) {
   const [view, setView] = useState<View>('ACTIVE');
   const [form, setForm] = useState<{ open: boolean; editing?: Driver }>({ open: false });
   const [removing, setRemoving] = useState<Driver | null>(null);
+  const [anonymizing, setAnonymizing] = useState<Driver | null>(null);
 
   const items = (drivers.data ?? []).filter((d) => view === 'ALL' || d.status === view);
 
@@ -89,18 +91,25 @@ export function DriversTab({ canManage }: { canManage: boolean }) {
                 <UserRound className="size-5" aria-hidden />
               </div>
               <div className="min-w-0 flex-1 space-y-0.5">
-                <p className="truncate font-semibold">{d.name}</p>
-                <p className="text-sm tabular-nums text-muted-foreground">
-                  CPF {formatDocument(d.document)}
-                  {d.phone ? ` · ${d.phone}` : ''}
-                </p>
+                <p className={d.anonymized ? 'truncate font-semibold text-muted-foreground' : 'truncate font-semibold'}>{d.name}</p>
+                {d.anonymized ? (
+                  <p className="text-sm text-muted-foreground">Dados pessoais removidos</p>
+                ) : (
+                  <p className="text-sm tabular-nums text-muted-foreground">
+                    CPF {formatDocument(d.document)}
+                    {d.phone ? ` · ${d.phone}` : ''}
+                  </p>
+                )}
                 <p className="truncate text-xs text-muted-foreground">
                   {EMPLOYMENT_TYPE_LABELS[d.employmentType]}
                   {d.hiredAt ? ` · desde ${formatDateBR(d.hiredAt)}` : ''}
                 </p>
                 {d.member && <p className="truncate text-xs text-muted-foreground">Portal: {d.member.name}</p>}
                 <p className="truncate text-xs text-muted-foreground">{d.currentRoutes.length ? `Hoje: ${d.currentRoutes.join(', ')}` : 'Sem escala hoje'}</p>
-                <div className="pt-1.5">{d.status === 'ACTIVE' ? <Badge>Ativo</Badge> : <Badge variant="secondary">Inativo</Badge>}</div>
+                <div className="flex flex-wrap gap-1.5 pt-1.5">
+                  {d.status === 'ACTIVE' ? <Badge>Ativo</Badge> : <Badge variant="secondary">Inativo</Badge>}
+                  {d.anonymized && <Badge variant="secondary">Dados removidos</Badge>}
+                </div>
               </div>
               {canManage && (
                 <DropdownMenu>
@@ -110,9 +119,14 @@ export function DriversTab({ canManage }: { canManage: boolean }) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onSelect={() => setForm({ open: true, editing: d })}>
-                      <Pencil /> Editar
+                    <DropdownMenuItem disabled={d.anonymized} onSelect={() => setForm({ open: true, editing: d })}>
+                      <Pencil /> {d.anonymized ? 'Editar (dados removidos)' : 'Editar'}
                     </DropdownMenuItem>
+                    {canAnonymize(d) && (
+                      <DropdownMenuItem className="text-destructive" onSelect={() => setAnonymizing(d)}>
+                        <Eraser /> Remover dados pessoais
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem className="text-destructive" onSelect={() => setRemoving(d)}>
                       <Trash2 /> Excluir
                     </DropdownMenuItem>
@@ -126,6 +140,7 @@ export function DriversTab({ canManage }: { canManage: boolean }) {
 
       {canManage && <Fab icon={Plus} label="Novo motorista" onClick={() => setForm({ open: true })} />}
       <DriverFormDialog open={form.open} editing={form.editing} drivers={drivers.data ?? []} onOpenChange={(open) => setForm((f) => ({ ...f, open }))} />
+      <AnonymizeDriverDialog driver={anonymizing} onClose={() => setAnonymizing(null)} />
       <ConfirmDialog
         open={!!removing}
         onOpenChange={(o) => !o && setRemoving(null)}

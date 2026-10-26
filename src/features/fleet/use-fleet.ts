@@ -24,6 +24,18 @@ export const TRANSPORT_TYPE_LABELS: Record<TransportType, string> = {
 
 export const RECORD_STATUS_LABELS: Record<RecordStatus, string> = { ACTIVE: 'Ativo', INACTIVE: 'Inativo' };
 
+/** "Remover dados pessoais" (LGPD) só vale para motorista inativo e ainda não anonimizado. */
+export function canAnonymize(d: Pick<Driver, 'status' | 'anonymized'>): boolean {
+  return d.status === 'INACTIVE' && !d.anonymized;
+}
+
+/** Confirmação forte da anonimização: a pessoa digita a palavra exata. */
+export const ANONYMIZE_CONFIRM_WORD = 'REMOVER';
+
+export function isAnonymizeConfirmed(typed: string): boolean {
+  return typed.trim().toUpperCase() === ANONYMIZE_CONFIRM_WORD;
+}
+
 /** Motoristas, rotas e escalas andam juntos (rotas atuais do motorista, escala atual da rota). */
 export function useInvalidateFleet() {
   const qc = useQueryClient();
