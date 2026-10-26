@@ -21,6 +21,8 @@ import { ApprovalsPage } from '@/features/driver/approvals-page';
 import { AppIndexRedirect, MyDayPage } from '@/features/driver/my-day-page';
 import { OperationsPage } from '@/features/fleet/operations-page';
 import { KmPage } from '@/features/mileage/km-page';
+import { ClosingsPage } from '@/features/closings/closings-page';
+import { ReportsPage } from '@/features/reports/reports-page';
 import { NotFoundPage } from './error-pages';
 import { GuestOnly, RequireAuth, RequireCompany, RequirePermission } from './guards';
 
@@ -126,6 +128,22 @@ export const router = createBrowserRouter([
                 element: (
                   <RequirePermission permission="finance:read">
                     <CostsPage />
+                  </RequirePermission>
+                ),
+              },
+              {
+                path: 'reports',
+                element: (
+                  <RequirePermission permission="reports:read">
+                    <ReportsPage />
+                  </RequirePermission>
+                ),
+              },
+              {
+                path: 'monthly-closing',
+                element: (
+                  <RequirePermission permission="reports:read">
+                    <ClosingsPage />
                   </RequirePermission>
                 ),
               },
