@@ -66,16 +66,19 @@ async function send(method: Method, path: string, body?: unknown): Promise<Respo
   const headers: Record<string, string> = { Accept: 'application/json' };
   const token = tokenStore.get();
   if (token) headers.Authorization = `Bearer ${token}`;
-  if (body !== undefined) headers['Content-Type'] = 'application/json';
+  const isForm = typeof FormData !== 'undefined' && body instanceof FormData;
+  // Multipart: o navegador define o Content-Type com o boundary.
+  if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json';
   return fetch(`${API_URL}${path}`, {
     method,
     headers,
     credentials: 'include',
-    body: body === undefined ? undefined : JSON.stringify(body),
+    body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
   });
 }
 
-export async function api<T>(method: Method, path: string, body?: unknown): Promise<T> {
+/** Envia, renovando a sessão uma vez em caso de 401, e converte erros no formato padrão. */
+async function request(method: Method, path: string, body?: unknown): Promise<Response> {
   let res = await send(method, path, body);
   if (res.status === 401 && !NO_RETRY.some((p) => path.startsWith(p))) {
     const renewed = await refreshSession();
@@ -96,8 +99,21 @@ export async function api<T>(method: Method, path: string, body?: unknown): Prom
       res.status >= 500 ? 'Não foi possível concluir. Tente novamente em instantes.' : (err.message ?? 'Erro inesperado');
     throw new ApiError(res.status, err.code ?? 'ERROR', message, err.details);
   }
+  return res;
+}
+
+export async function api<T>(method: Method, path: string, body?: unknown): Promise<T> {
+  const res = await request(method, path, body);
   if (res.status === 204) return undefined as T;
   return (await res.json()) as T;
+}
+
+/** Baixa um arquivo protegido (comprovante) com o token atual e devolve Blob + nome. */
+async function download(path: string): Promise<{ blob: Blob; fileName: string }> {
+  const res = await request('GET', path);
+  const disposition = res.headers.get('content-disposition') ?? '';
+  const match = /filename\*=UTF-8''([^;]+)/.exec(disposition) ?? /filename="([^"]+)"/.exec(disposition);
+  return { blob: await res.blob(), fileName: match ? decodeURIComponent(match[1]) : 'arquivo' };
 }
 
 export const http = {
@@ -105,6 +121,8 @@ export const http = {
   post: <T>(path: string, body?: unknown) => api<T>('POST', path, body ?? {}),
   patch: <T>(path: string, body: unknown) => api<T>('PATCH', path, body),
   delete: <T = void>(path: string) => api<T>('DELETE', path),
+  upload: <T>(path: string, form: FormData) => api<T>('POST', path, form),
+  download,
 };
 
 export function errorMessage(error: unknown): string {

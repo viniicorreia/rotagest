@@ -1,11 +1,12 @@
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { MoreHorizontal, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { Brand } from './brand';
 import { CompanySwitcher } from './company-switcher';
-import { NAV_ITEMS } from './nav';
+import { MOBILE_SLOTS, NAV_ITEMS } from './nav';
 import { UserMenu } from './user-menu';
 
 function readCollapsed(): boolean {
@@ -21,6 +22,13 @@ export function AppLayout() {
   const { can } = useAuth();
   const [collapsed, setCollapsed] = useState(readCollapsed);
   const items = NAV_ITEMS.filter((i) => can(i.permission));
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  // Celular: até MOBILE_SLOTS itens na barra; se passar, os últimos vão para "Mais".
+  const overflow = items.length > MOBILE_SLOTS;
+  const mobileItems = overflow ? items.slice(0, MOBILE_SLOTS - 1) : items;
+  const moreItems = overflow ? items.slice(MOBILE_SLOTS - 1) : [];
+  const moreActive = moreItems.some((i) => pathname.startsWith(i.to));
 
   function toggle() {
     setCollapsed((c) => {
@@ -95,10 +103,10 @@ export function AppLayout() {
 
         <nav
           className="fixed inset-x-0 bottom-0 z-30 grid border-t bg-card/95 pb-safe backdrop-blur md:hidden"
-          style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}
+          style={{ gridTemplateColumns: `repeat(${mobileItems.length + (overflow ? 1 : 0)}, minmax(0, 1fr))` }}
           aria-label="Principal"
         >
-          {items.map((item) => (
+          {mobileItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -113,6 +121,26 @@ export function AppLayout() {
               {item.shortLabel ?? item.label}
             </NavLink>
           ))}
+          {overflow && (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className={cn(
+                  'flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-medium text-muted-foreground outline-none',
+                  moreActive && 'text-primary',
+                )}
+              >
+                <MoreHorizontal className="size-5" aria-hidden />
+                Mais
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" side="top" className="mb-2 w-56">
+                {moreItems.map((item) => (
+                  <DropdownMenuItem key={item.to} onSelect={() => navigate(item.to)} className={cn('h-11', pathname.startsWith(item.to) && 'text-primary')}>
+                    <item.icon /> {item.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </nav>
       </div>
     </div>
