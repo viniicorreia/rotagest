@@ -12,11 +12,13 @@ interface ReasonDialogProps {
   confirmLabel: string;
   minLength?: number;
   children?: ReactNode;
+  /** Ações que desfazem um bloqueio (ex.: reativar) não usam o botão vermelho. */
+  tone?: 'destructive' | 'default';
   onConfirm: (reason: string) => Promise<unknown>;
 }
 
 /** Confirmação de ação financeira que exige justificativa (estorno, cancelamento, ajuste). */
-export function ReasonDialog({ open, onOpenChange, title, description, confirmLabel, minLength = 10, children, onConfirm }: ReasonDialogProps) {
+export function ReasonDialog({ open, onOpenChange, title, description, confirmLabel, minLength = 10, children, tone = 'destructive', onConfirm }: ReasonDialogProps) {
   const [reason, setReason] = useState('');
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
@@ -58,7 +60,7 @@ export function ReasonDialog({ open, onOpenChange, title, description, confirmLa
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={busy}>
               Voltar
             </Button>
-            <Button type="submit" variant="destructive" loading={busy}>
+            <Button type="submit" variant={tone === 'destructive' ? 'destructive' : 'default'} loading={busy}>
               {confirmLabel}
             </Button>
           </DialogFooter>

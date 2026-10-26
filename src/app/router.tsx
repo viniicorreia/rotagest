@@ -24,7 +24,13 @@ import { KmPage } from '@/features/mileage/km-page';
 import { ClosingsPage } from '@/features/closings/closings-page';
 import { ReportsPage } from '@/features/reports/reports-page';
 import { NotFoundPage } from './error-pages';
-import { GuestOnly, RequireAuth, RequireCompany, RequirePermission } from './guards';
+import { PlatformLayout } from '@/features/platform/platform-layout';
+import { PlatformOverviewPage } from '@/features/platform/overview-page';
+import { PlatformCompaniesPage } from '@/features/platform/companies-page';
+import { PlatformPlansPage } from '@/features/platform/plans-page';
+import { PlatformSubscriptionsPage } from '@/features/platform/subscriptions-page';
+import { PlatformSettingsPage } from '@/features/platform/settings-page';
+import { GuestOnly, RequireAuth, RequireCompany, RequirePermission, RequirePlatformAdmin } from './guards';
 
 export const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/app" replace /> },
@@ -42,6 +48,22 @@ export const router = createBrowserRouter([
     element: <RequireAuth />,
     children: [
       { path: '/onboarding', element: <OnboardingPage /> },
+      {
+        element: <RequirePlatformAdmin />,
+        children: [
+          {
+            path: '/platform',
+            element: <PlatformLayout />,
+            children: [
+              { index: true, element: <PlatformOverviewPage /> },
+              { path: 'companies', element: <PlatformCompaniesPage /> },
+              { path: 'plans', element: <PlatformPlansPage /> },
+              { path: 'subscriptions', element: <PlatformSubscriptionsPage /> },
+              { path: 'settings', element: <PlatformSettingsPage /> },
+            ],
+          },
+        ],
+      },
       {
         element: <RequireCompany />,
         children: [
