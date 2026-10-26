@@ -15,6 +15,7 @@ import { useAuth } from '@/lib/auth';
 import { currentMonth, formatMonthBR } from '@/lib/dates';
 import { formatBRL, isNegative } from '@/lib/money';
 import { axisTick, CHART, ChartTooltip, compactBRL } from '../finance/charts';
+import { formatRate } from '../mileage/units';
 import { VehicleFormDialog } from './vehicle-form-dialog';
 import { formatPlate, VehicleStatusBadge } from './vehicles-page';
 
@@ -57,8 +58,14 @@ export function VehicleDetailPage() {
           )
         }
       />
-      <div className="mb-4">
+      <div className="mb-4 flex flex-wrap items-center gap-3">
         <VehicleStatusBadge vehicle={v} />
+        <span className="text-sm text-muted-foreground">
+          Valor por km: <span className="font-medium tabular-nums text-foreground">{v.ratePerKm ? formatRate(v.ratePerKm) : 'não definido'}</span>
+        </span>
+        <Link to={`/app/km?vehicle=${v.id}`} className="text-sm font-medium text-primary hover:underline">
+          Ver km rodados
+        </Link>
       </div>
 
       {!fin ? (

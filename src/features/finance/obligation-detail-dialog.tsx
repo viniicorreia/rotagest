@@ -11,13 +11,20 @@ import { useAuth } from '@/lib/auth';
 import { formatDateBR, formatMonthBR } from '@/lib/dates';
 import { formatBRL } from '@/lib/money';
 import { AttachmentsPanel } from './attachments';
-import { PAYMENT_METHOD_LABELS } from './labels';
+import { ALLOCATION_METHOD_LABELS, PAYMENT_METHOD_LABELS } from './labels';
 import { ObligationFormDialog } from './obligation-form-dialog';
 import { ObligationStatus } from './obligation-status';
 import { ReasonDialog } from './reason-dialog';
 import { SettleDialog } from './settle-dialog';
 import { settledOf, type ObligationDetail, type SideConfig } from './sides';
 import { useInvalidateFinance } from './use-finance';
+
+const PERCENT = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 4 });
+
+/** "33.333333" → "33,3333%" (participação calculada pela API; só formatamos). */
+function formatPercent(value: string): string {
+  return `${PERCENT.format(Number(value))}%`;
+}
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -41,6 +48,7 @@ export function ObligationDetailDialog({ config, id, onClose }: { config: SideCo
   const d = detail.data;
   const isOpen = d && d.status !== 'CANCELED' && Number(d.openAmount) > 0;
   const activeSettlements = d?.settlements.filter((s) => !s.reversedAt) ?? [];
+  const split = d?.allocations.filter((a) => a.method !== 'DIRECT') ?? [];
 
   return (
     <>
@@ -84,11 +92,33 @@ export function ObligationDetailDialog({ config, id, onClose }: { config: SideCo
                 <Row label="Categoria">{d.category.name}</Row>
                 <Row label="Competência">{formatMonthBR(d.competence, true)}</Row>
                 <Row label="Vencimento">{formatDateBR(d.dueDate)}</Row>
-                <Row label="Veículo">{d.vehicle ? `${d.vehicle.name} · ${d.vehicle.plate}` : 'Empresa (sem veículo)'}</Row>
+                <Row label="Veículo">
+                  {split.length ? `Dividido entre ${split.length} veículos` : d.vehicle ? `${d.vehicle.name} · ${d.vehicle.plate}` : 'Empresa (sem veículo)'}
+                </Row>
                 {'supplierName' in d && d.supplierName && <Row label="Fornecedor">{d.supplierName}</Row>}
                 {d.notes && <Row label="Observações">{d.notes}</Row>}
                 {d.cancelReason && <Row label="Motivo do cancelamento">{d.cancelReason}</Row>}
               </div>
+
+              {split.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium">Rateio · {ALLOCATION_METHOD_LABELS[split[0].method]}</h4>
+                  <ul className="divide-y rounded-lg border">
+                    {split.map((a, i) => (
+                      <li key={a.vehicle?.id ?? i} className="flex items-center gap-3 px-3 py-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium">{a.vehicle ? a.vehicle.name : 'Veículo removido'}</p>
+                          <p className="truncate text-xs text-muted-foreground">
+                            {a.vehicle?.plate ? `${a.vehicle.plate} · ` : ''}
+                            {ALLOCATION_METHOD_LABELS[a.method]} · {formatPercent(a.percent)}
+                          </p>
+                        </div>
+                        <span className="text-sm font-semibold tabular-nums">{formatBRL(a.amount)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <h4 className="text-sm font-medium">{config.side === 'payables' ? 'Pagamentos' : 'Recebimentos'}</h4>

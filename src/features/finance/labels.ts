@@ -1,4 +1,4 @@
-import type { AccountType, EntryKind, PaymentMethod, VehicleStatus } from '@/api/types';
+import type { AccountType, AllocationMethod, EntryKind, PaymentMethod, VehicleStatus } from '@/api/types';
 
 export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
   PIX: 'Pix',
@@ -36,3 +36,11 @@ export const TRANSACTION_KIND_LABELS = {
   ADJUSTMENT: 'Ajuste',
   REVERSAL: 'Estorno',
 } as const;
+
+export const ALLOCATION_METHOD_LABELS: Record<AllocationMethod, string> = {
+  DIRECT: 'Direto',
+  EQUAL: 'Partes iguais',
+  PERCENT: 'Percentual',
+  FIXED: 'Valor fixo',
+  REVENUE_PROPORTIONAL: 'Proporcional à receita',
+};
