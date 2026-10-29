@@ -33,7 +33,7 @@ const STEPS: Record<FirstStepKey, StepCopy> = {
   drivers: {
     icon: Users,
     title: 'Cadastre os motoristas',
-    description: 'Quem dirige os veículos. Só o nome e o CPF são obrigatórios.',
+    description: 'Quem dirige os veículos. Só o nome é obrigatório.',
     action: 'Adicionar motorista',
   },
   routes: {

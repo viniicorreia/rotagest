@@ -2910,7 +2910,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             name: string;
-            document: string;
+            document: string | null;
             phone: string | null;
             /** Format: date */
             hiredAt: string | null;
@@ -2927,10 +2927,10 @@ export interface components {
             /** @example José da Silva */
             name: string;
             /**
-             * @description CPF; pontos e traço são aceitos
+             * @description CPF (opcional); pontos e traço são aceitos
              * @example 52998224725
              */
-            document: string;
+            document?: string | null;
             phone?: string | null;
             /**
              * Format: date
@@ -2950,10 +2950,10 @@ export interface components {
             /** @example José da Silva */
             name?: string;
             /**
-             * @description CPF; pontos e traço são aceitos
+             * @description CPF (opcional); pontos e traço são aceitos
              * @example 52998224725
              */
-            document?: string;
+            document?: string | null;
             phone?: string | null;
             /**
              * Format: date
