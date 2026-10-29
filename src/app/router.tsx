@@ -30,6 +30,7 @@ const AppIndexRedirect = lazyPage(() => import('@/features/driver/my-day-page'),
 const MyDayPage = lazyPage(() => import('@/features/driver/my-day-page'), 'MyDayPage');
 const ApprovalsPage = lazyPage(() => import('@/features/driver/approvals-page'), 'ApprovalsPage');
 const DashboardPage = lazyPage(() => import('@/features/dashboard/dashboard-page'), 'DashboardPage');
+const FirstStepsPage = lazyPage(() => import('@/features/onboarding/first-steps-page'), 'FirstStepsPage');
 // Financeiro
 const ObligationsPage = lazyPage(() => import('@/features/finance/obligations-page'), 'ObligationsPage');
 const AccountsPage = lazyPage(() => import('@/features/accounts/accounts-page'), 'AccountsPage');
@@ -160,6 +161,14 @@ export const router = createBrowserRouter([
                     children: [
                       { index: true, element: <AppIndexRedirect /> },
                       { path: 'dashboard', element: <DashboardPage /> },
+                      {
+                        path: 'first-steps',
+                        element: (
+                          <RequirePermission permission="fleet:manage">
+                            <FirstStepsPage />
+                          </RequirePermission>
+                        ),
+                      },
                       {
                         path: 'expenses',
                         element: (

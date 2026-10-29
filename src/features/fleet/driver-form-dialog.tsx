@@ -19,7 +19,7 @@ const schema = z.object({
   document: z
     .string()
     .transform(onlyDigits)
-    .refine((v) => isValidCpf(v), 'CPF inválido'),
+    .refine((v) => !v || isValidCpf(v), 'CPF inválido'),
   phone: z.string().trim().max(20),
   hiredAt: z.string(),
   employmentType: z.enum(['EMPLOYEE', 'CONTRACTOR', 'PARTNER', 'OTHER']),
@@ -41,7 +41,7 @@ export function DriverFormDialog({ open, onOpenChange, editing, drivers }: { ope
     if (open)
       form.reset({
         name: editing?.name ?? '',
-        document: editing ? formatDocument(editing.document) : '',
+        document: editing?.document ? formatDocument(editing.document) : '',
         phone: editing?.phone ?? '',
         hiredAt: editing?.hiredAt ?? '',
         employmentType: editing?.employmentType ?? 'EMPLOYEE',
@@ -57,7 +57,7 @@ export function DriverFormDialog({ open, onOpenChange, editing, drivers }: { ope
   async function submit(v: FormOut) {
     const body: Record<string, unknown> = {
       name: v.name,
-      document: v.document,
+      document: v.document || null,
       phone: v.phone || null,
       employmentType: v.employmentType,
       status: v.status,
@@ -91,7 +91,7 @@ export function DriverFormDialog({ open, onOpenChange, editing, drivers }: { ope
                 <Input id="d-name" autoComplete="off" {...form.register('name')} aria-invalid={!!errors.name} />
               </Field>
             </div>
-            <Field id="d-doc" label="CPF" error={errors.document?.message}>
+            <Field id="d-doc" label="CPF (opcional)" error={errors.document?.message}>
               <Input id="d-doc" inputMode="numeric" placeholder="000.000.000-00" {...form.register('document')} aria-invalid={!!errors.document} />
             </Field>
             <Field id="d-phone" label="Telefone" error={errors.phone?.message}>

@@ -96,8 +96,7 @@ export function DriversTab({ canManage }: { canManage: boolean }) {
                   <p className="text-sm text-muted-foreground">Dados pessoais removidos</p>
                 ) : (
                   <p className="text-sm tabular-nums text-muted-foreground">
-                    CPF {formatDocument(d.document)}
-                    {d.phone ? ` · ${d.phone}` : ''}
+                    {[d.document ? `CPF ${formatDocument(d.document)}` : 'Sem CPF', d.phone].filter(Boolean).join(' · ')}
                   </p>
                 )}
                 <p className="truncate text-xs text-muted-foreground">
