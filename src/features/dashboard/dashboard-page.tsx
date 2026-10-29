@@ -16,6 +16,7 @@ import { formatBRL, isNegative } from '@/lib/money';
 import { cn } from '@/lib/utils';
 import { axisTick, CHART, ChartTooltip, compactBRL } from '../finance/charts';
 import { useCategories, useVehicles } from '../finance/use-finance';
+import { FirstStepsCard } from '../onboarding/first-steps-card';
 import { OverviewCards } from './overview-cards';
 
 type Period = 'month' | 'last' | '3m' | '6m' | 'year';
@@ -84,6 +85,7 @@ function FinancialDashboard({ firstName }: { firstName?: string }) {
   return (
     <>
       <PageHeader title={`Olá, ${firstName ?? ''}`.trim()} description="Resumo financeiro da empresa." />
+      <FirstStepsCard />
 
       <Card className="mb-4 grid gap-2 p-3 sm:grid-cols-3">
         <NativeSelect aria-label="Período" value={period} onChange={(e) => setPeriod(e.target.value as Period)}>

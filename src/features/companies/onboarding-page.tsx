@@ -18,7 +18,8 @@ export function OnboardingPage() {
       const res = await http.post<TokenResponse & { company: Company }>('/companies', values);
       await applyTokens(res);
       toast.success(`${res.company.tradeName} criada. Seu teste gratuito começou!`);
-      navigate('/app/dashboard', { replace: true });
+      // Empresa nova começa pelo passo a passo dos cadastros básicos.
+      navigate('/app/first-steps', { replace: true });
     } catch (e) {
       toast.error(errorMessage(e));
     }

@@ -12,6 +12,7 @@ import type { Company } from '@/api/types';
 import { useMembers } from '../team/use-team';
 import { SUBSCRIPTION_STATUS, useSubscription } from '../subscriptions/use-subscription';
 import { UsageMeter } from '../subscriptions/usage-meter';
+import { FirstStepsCard } from '../onboarding/first-steps-card';
 
 function useCompany() {
   return useQuery({ queryKey: ['company'], queryFn: () => http.get<Company & { myRoleLabel: string }>('/companies/current') });
@@ -28,6 +29,7 @@ export function OverviewCards() {
   return (
     <>
       <PageHeader title={`Olá, ${firstName}`} description={me?.activeCompany?.tradeName} />
+      <FirstStepsCard />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <Card>
